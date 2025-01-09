@@ -1,0 +1,95 @@
+<style>
+    body {
+        overflow-x: hidden;
+    }
+    .grid {
+        display: grid;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        grid-template-rows: 1rem auto auto auto auto;
+        grid-template-columns: 1rem auto auto 1rem;
+    }
+    .line {
+        z-index: 1;
+    }
+    .vertical-line {
+    width: 1px;
+    height: 100%;
+    background: linear-gradient(to left, transparent, rgba(0, 0, 0, 0.08) 100%), linear-gradient(to left, rgba(0, 0, 0, 0.08) 100%, transparent);
+    animation: grow-vertical 0.8s ease-in forwards;
+    }
+    .line-left {
+    grid-row: 1 / span 5;
+    grid-column: 2;
+}
+.line-right {
+    grid-row: 1 / span 5;
+    grid-column: 4;
+    animation-delay: 0.6s;
+}
+.line-center {
+    grid-row: 1 / span 5;
+    grid-column: 3;
+    animation-delay: 0.3s;
+}
+.line-top {
+    grid-row: 2;
+    grid-column: 1 / span 4;
+}
+
+.horizontal-line {
+    height: 1px;
+    width: 100%;
+    background: linear-gradient(to left, transparent, rgba(0, 0, 0, 0.08) 100%), linear-gradient(to left, rgba(0, 0, 0, 0.08) 100%, transparent);
+    animation: grow-horizontal 0.8s ease-in forwards;
+}
+.line-top {
+    grid-row: 2;
+    grid-column: 1 / span 4;
+}
+.line-top-center {
+    grid-row: 3;
+    grid-column: 1 / span 4;
+    animation-delay: 0.2s;
+}
+ 
+.line-bottom-center {
+    grid-row: 4;
+    grid-column: 1 / span 4;
+    animation-delay: 0.4s;
+}
+.line-bottom {
+    grid-row: 5;
+    grid-column: 1 / span 3;
+    animation-delay: 0.6s;
+}
+@keyframes grow-vertical {
+  from {
+    height: 0%;
+  }
+  to {
+    height: 100%;
+  }
+}
+
+@keyframes grow-horizontal {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+</style>
+<div class="grid">
+    <div class="line vertical-line line-left"></div>
+    <div class="line vertical-line line-right"></div>
+    <div class="line vertical-line line-center"></div>
+    <div class="line horizontal-line line-top"></div>
+    <div class="line horizontal-line line-top-center"></div>
+    <div class="line horizontal-line line-bottom-center"></div>
+    <div class="line horizontal-line line-bottom"></div>
+  </div>

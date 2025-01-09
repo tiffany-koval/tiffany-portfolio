@@ -544,93 +544,311 @@ if (module.hot) {
 
 
 
-  // Reference to the SVG container
-  const starLogo = document.querySelector('.star-logo');
-  const logoContainer = document.querySelector('.logo-container');
-  const starSVG = document.querySelector('.star');
-  let lastScrollY = 0; // Tracks the last scroll position
-  let rotation = 0; // Tracks the current rotation of the SVG
-  let logoScroll = false; // Set logoScroll flag false
-  let isClicking = false; // Set isClicking flag false
+//   const lockerSectionVisible = document.querySelectorAll('.locker__section.visible')
+//   const lockerSection = document.querySelectorAll('.locker__section')
 
-  // Create and append the circle dynamically
-  const circle = document.createElement('div');
-  circle.classList.add('circle');
-  logoContainer.appendChild(circle);
+// // Disable pointer events after mouse click
+// lockerSections.addEventListener('mousedown', () => {
+//     lockerSections.style.pointerEvents = 'none';
+//     lockerSectionVisible.style.pointerEvents = 'none';
+//     lockerSection.style.pointerEvents = 'none';
+// });
 
-  //Dynamically calculate circle size 
-  // const padding = parseFloat(getComputedStyle(logoContainer).paddingLeft); // .75rem in px
-  // const starSize = parseFloat(starSVG.getAttribute('width')); // SVG size
-  // const circleSize = starSize + 2 * padding; // Total size
+// // Re-enable pointer events when scrolling starts
+// lockerSections.addEventListener('scroll', () => {
+//     lockerSections.style.pointerEvents = 'auto';
+//     lockerSectionVisible.style.pointerEvents = 'auto';
+//     lockerSection.style.pointerEvents = 'auto';
+// });
+// lockerSections.addEventListener('mousedown', () => {
+//   setTimeout(() => {
+//       lockerSections.style.pointerEvents = 'none';
+//   }, 0); // Minimal delay to ensure it applies immediately
+// });
 
-  // Hover In: Expand the circle
-  logoContainer.addEventListener('mouseenter', () => {
-    gsap.to(circle, {
-      width: '50px', // Circle's final size
-      height: '50px',
-      duration: 0.3,
-      ease: 'power2.out',
+// lockerSections.addEventListener('mousedown', () => {
+//   lockerSections.style.pointerEvents = 'none';
+
+//   // Reset pointer-events back to 'auto' after a short delay
+//   setTimeout(() => {
+//       lockerSections.style.pointerEvents = 'auto';
+//   }, 2000); // Adjust the timeout as necessary
+// });
+
+
+// lockerSections.addEventListener('mousedown', (event) => {
+//   event.preventDefault();
+//   event.stopPropagation(); // Prevent bubbling
+//   lockerSections.style.pointerEvents = 'none';
+//   console.log('Pointer events set to none');
+//   console.log(getComputedStyle(lockerSections).pointerEvents); 
+// });
+
+// Reset pointer-events on mouseup
+// lockerSections.addEventListener('mousedown', () => {
+//   lockerSections.style.pointerEvents = 'none';
+// });
+
+
+// // Reset pointer-events on mouseup
+// lockerSections.addEventListener('mouseup', () => {
+//   lockerSections.style.pointerEvents = 'auto';
+// });
+
+// // Optional: Reset pointer-events when scrolling starts
+// lockerSections.addEventListener('scroll', () => {
+//   lockerSections.style.pointerEvents = 'auto';
+// });
+
+
+// lockerSections.addEventListener('mousedown', () => {
+//   console.log('mousedown event fired');
+// });
+
+
+
+// // Create a GSAP timeline for smooth rotation
+// gsap.set(starLogo, { rotation: 0 }); // Initialize rotation
+
+// // Utility to detect the correct scrollable container
+// function getScrollOffset() {
+//   const containers = [window, document.documentElement, document.body, document.querySelector('.locker__sections')];
+//   for (const container of containers) {
+//     const scrollY = container.scrollTop || container.scrollY;
+//     if (scrollY > 0) return { container, scrollY };
+//   }
+//   return { container: window, scrollY: 0 }; // Default to window
+// }
+
+// // Scroll handler
+// function onScroll() {
+//   const { scrollY } = getScrollOffset(); // Detect the scroll position
+//   const targetRotation = scrollY * 0.2; // Adjust rotation sensitivity
+//   gsap.to(starLogo, {
+//     rotation: targetRotation,
+//     // duration: 0.3, // Smooth easing duration
+//     ease: "power2.out", // Smooth easing function
+//   });
+// }
+
+// // Attach scroll listener to relevant containers
+// const scrollContainers = [window, document.documentElement, document.body, document.querySelector('.locker__sections')];
+// scrollContainers.forEach((container) => {
+//   if (container && container.addEventListener) {
+//     container.addEventListener('scroll', onScroll);
+//   }
+// });
+
+
+
+
+//   function onClick() {
+//       if (isClicking) return; // Prevent multiple rapid clicks
+//       isClicking = true;
+
+//       const currentScrollY = window.scrollY;
+//       // Push the user back to the top if they've clicked the logo and scrolled
+//       if (currentScrollY > 0) {
+//           window.scrollTo({
+//               top: 0,
+//               behavior: 'smooth'
+//           })
+//       }
+
+//       setTimeout(() => {
+//           isClicking = false; //Re-enable click after a short delay
+//       }, 500);
+//   }
+
+
+
+// // Create and append the circle dynamically
+// const logoContainer = document.querySelector('.logo-container');
+// const starSVG = document.querySelector('.star');
+// const circle = document.createElement('div');
+// circle.classList.add('circle');
+// logoContainer.appendChild(circle);
+
+// // Dynamically calculate circle size 
+// // const padding = parseFloat(getComputedStyle(logoContainer).paddingLeft); // .75rem in px
+// // const starSize = parseFloat(starSVG.getAttribute('width')); // SVG size
+// // const circleSize = starSize + 2 * padding; // Total size
+
+// logoContainer.addEventListener('mouseenter', () => {
+//   gsap.to(circle, {
+//     width: '50px', // Circle's final size
+//     height: '50px',
+//     duration: 0.3,
+//     ease: 'power2.out',
+//   });
+// });
+
+// // Hover Out: Shrink the circle
+// logoContainer.addEventListener('mouseleave', () => {
+//   gsap.to(circle, {
+//     width: 0,
+//     height: 0,
+//     duration: 0.3,
+//     ease: 'power2.in',
+//   });
+// });
+
+// // Reference to the SVG container and scrollable sections
+// const starLogo = document.querySelector('.star-logo');
+// const lockerSections = document.querySelector('.locker__sections');
+// let isClicking = false; // Prevents multiple rapid clicks
+// let isAnimating = false; // Prevents scroll updates during click animation
+// let isScrolling = false; // Prevents scroll-based rotation during smooth scroll
+// let lastRotation = 0; // Tracks the last known rotation value for sync
+
+// // Set initial rotation for the star logo
+// gsap.set(starLogo, { rotation: lastRotation });
+
+// // Scroll handler for rotation
+// function onScroll() {
+//   if (isAnimating || isScrolling) return; // Prevent scroll-based rotation during click animation or smooth scroll
+
+//   const scrollY = lockerSections ? lockerSections.scrollTop : window.scrollY; // Get scroll position
+//   const targetRotation = scrollY * 0.2; // Adjust rotation sensitivity
+
+//   // Only update rotation if the rotation value has changed significantly
+//   if (Math.abs(targetRotation - lastRotation) > 0.5) {
+//     gsap.to(starLogo, {
+//       rotation: targetRotation,
+//       ease: "none", // No easing for smooth continuous rotation
+//     });
+//     lastRotation = targetRotation; // Update the last known rotation value
+//   }
+// }
+
+// // Click handler for returning to the top
+// function onClick() {
+//   if (isClicking || isAnimating) return; // Prevent multiple rapid clicks
+//   isClicking = true;
+//   isAnimating = true; // Temporarily disable scroll updates
+//   isScrolling = true; // Temporarily disable scroll-based rotation
+
+//   // Determine the correct container to scroll to the top
+//   const container = lockerSections || window;
+
+//   // Scroll to top with smooth behavior
+//   container.scrollTo({
+//     top: 0,
+//     behavior: 'smooth',
+//   });
+
+//   // Reset rotation to 0 (without interrupting the smooth scroll)
+//   gsap.to(starLogo, {
+//     rotation: 0,
+//     duration: 1,
+//     ease: "power2.out",
+//     onComplete: () => {
+//       isClicking = false; // Reset the click flag
+//       isAnimating = false; // Re-enable scroll updates
+//       isScrolling = false; // Re-enable scroll-based rotation
+//     },
+//   });
+// }
+
+// // Attach scroll listener
+// if (lockerSections) {
+//   lockerSections.addEventListener('scroll', onScroll);
+// } else {
+//   window.addEventListener('scroll', onScroll);
+// }
+
+// // Attach click listener
+// if (starLogo) {
+//   starLogo.addEventListener('click', onClick);
+// } else {
+//   console.error('Star logo element not found!');
+// }
+
+
+// Select elements from the DOM
+const logoContainer = document.querySelector('.logo-container');
+const starLogo = document.querySelector('.star-logo');
+const lockerSections = document.querySelector('.locker__sections');
+
+// Create the circle element
+// const circle = document.createElement('div');
+// circle.classList.add('circle');
+
+const circle = document.createElement('div');
+circle.classList.add('circle');
+logoContainer.appendChild(circle);
+
+logoContainer.addEventListener('mouseenter', () => {
+  gsap.to(circle, {
+    width: '50px', // Circle's final size
+    height: '50px',
+    duration: 0.25,
+    ease: 'power2.out',
+  });
+});
+
+// Hover Out: Shrink the circle
+logoContainer.addEventListener('mouseleave', () => {
+  gsap.to(circle, {
+    width: 0,
+    height: 0,
+    duration: 0.25,
+    ease: 'power2.in',
+  });
+});
+
+
+
+
+
+// Track rotation for the star logo
+let rotation = 0;
+let isReversing = false;
+
+// Rotate the star logo on scroll within lockerSections
+lockerSections.addEventListener('scroll', () => {
+  if (!isReversing) {
+    const targetRotation = lockerSections.scrollTop * 0.08; // Adjust the rotation speed as needed
+    gsap.to(starLogo, {
+      rotation: targetRotation,
+      duration: 0.1, // Duration in seconds
+      ease: "power2.out", // Smooth easing
+      onUpdate: () => {
+        rotation = gsap.getProperty(starLogo, "rotation");
+      },
     });
+  }
+});
+
+// Smooth scrolling back to the top of lockerSections and reverse rotation on click
+logoContainer.addEventListener('click', (event) => {
+  event.preventDefault();
+
+  if (isReversing) return; // Prevent multiple reverse animations
+  isReversing = true;
+
+  // Reverse rotation during scroll-to-top animation
+  const scrollDuration = 1; // Duration in seconds
+  gsap.to(starLogo, {
+    rotation: 0,
+    duration: scrollDuration,
+    ease: "power2.inOut",
+    onUpdate: () => {
+      rotation = gsap.getProperty(starLogo, "rotation");
+    },
+    onComplete: () => {
+      rotation = 0;
+      isReversing = false;
+    },
   });
 
-  // Hover Out: Shrink the circle
-  logoContainer.addEventListener('mouseleave', () => {
-    gsap.to(circle, {
-      width: 0,
-      height: 0,
-      duration: 0.3,
-      ease: 'power2.in',
-    });
+  // Scroll smoothly to the top of lockerSections
+  lockerSections.scrollTo({
+    top: 0,
+    behavior: 'smooth',
   });
+});
 
-  // Function to handle scrolling
-  function onScroll() {
-
-      // Throttle onScroll event
-      if (!logoScroll) { 
-
-          window.requestAnimationFrame(() => {
-          // Get current scroll position
-          const currentScrollY = window.scrollY; 
-
-          // Calculate scroll delta
-          const scrollDelta = currentScrollY - lastScrollY;
-
-          // Update rotation based on scroll direction and speed
-          rotation += scrollDelta * 0.2; // Adjust multiplier to control sensitivity
-
-          // Apply rotation to the SVG
-          starLogo.style.transform = `rotate(${rotation}deg)`;
-
-          // Update the last scroll position
-          lastScrollY = currentScrollY;
-          //Reset logoScroll flag false
-          logoScroll = false;
-          })
-      logoScroll = true;
-      }
-  }
-
-  function onClick() {
-      if (isClicking) return; // Prevent multiple rapid clicks
-      isClicking = true;
-
-      const currentScrollY = window.scrollY;
-      // Push the user back to the top if they've clicked the logo and scrolled
-      if (currentScrollY > 0) {
-          window.scrollTo({
-              top: 0,
-              behavior: 'smooth'
-          })
-      }
-
-      setTimeout(() => {
-          isClicking = false; //Re-enable click after a short delay
-      }, 500);
-  }
-
-
-  
 
   document.addEventListener("DOMContentLoaded", function () {
       // Select the logo-container and hamburger elements
@@ -649,8 +867,8 @@ if (module.hot) {
   
   });
   
-  // Attach the scroll event listener with passive option
-  window.addEventListener('scroll', onScroll, { passive: true });
+
+  
 
   let hamburgerClicking = false;
   
@@ -691,222 +909,232 @@ if (module.hot) {
 
 
 
+   window.addEventListener("load", () => {
+    // Delay checking for textElementOne until everything is loaded
+    setTimeout(() => {
+        const textElementOne = document.querySelector(".text--1");
+        if (textElementOne) {
+            console.log("Text element one is present:", textElementOne);
+            textElementOne.style.opacity = "1";
+            textElementOne.style.color = "#0f0f0f";
+        } else {
+            console.error("text--1 not found in the DOM.");
+        }
+    }, 100); // Delay the check a bit to make sure everything is loaded
+});
 
 
 
-   document.addEventListener("DOMContentLoaded", () => {
 
-    window.scrollTo(0, 0);  
+
+//    document.addEventListener("DOMContentLoaded", () => {
+
+//     window.scrollTo(0, 0);  
   
-    const sections = document.querySelectorAll(".locker__section");
-    const headers = document.querySelectorAll(".header");
+//     const sections = document.querySelectorAll(".locker__section");
+//     const headers = document.querySelectorAll(".header");
   
-    const mainElement = document.querySelector('main');
-    // const projectsSection = document.querySelector(".projects-section");
+//     const mainElement = document.querySelector('main');
+//     // const projectsSection = document.querySelector(".projects-section");
   
-    mainElement.style.backgroundImage = "radial-gradient(at 30% 50%, rgba(255, 245, 245, .75) 38%, rgba(240, 246, 255, 0.75) 80%, rgba(240, 246, 255, 0.75) 100%)";
-    mainElement.style.backgroundColor = "";
-  
+   
+//     mainElement.style.backgroundColor = "";
     
   
-        const textElementOne = document.querySelector(".text--1");
+//         const textElementZero = document.querySelector(".text--0");
+//         const textElementOne = document.querySelector(".text--1");
   
-      // Set text--1 opacity to 1 on load
-      if (textElementOne) {
-          textElementOne.style.opacity = "1";
-      } else {
-          console.error("text--1 not found in the DOM.");
-      }
+//       // Set text--1 opacity to 1 on load
+//       if (textElementOne) {
+//         textElementOne.style.opacity = "1";
+//         textElementOne.style.color = "#0f0f0f";
+//           console.log('hey')
+//       } else {
+//           console.error("text--0 not found in the DOM.");
+//       }
         
   
-    // Function to reset all sections and styles
-    function resetActiveContent() {
-        console.log("Resetting active content");
+//     // Function to reset all sections and styles
+//     function resetActiveContent() {
+//         console.log("Resetting active content");
   
-        sections.forEach((section) => {
-            const textElement = section.querySelector(".text");
-            const imgElement = section.querySelector("img");
-            const descriptionElement = textElement?.nextElementSibling;
+//         sections.forEach((section) => {
+//             const textElement = section.querySelector(".text");
+//             const imgElement = section.querySelector("img");
+//             const descriptionElement = textElement?.nextElementSibling;
   
-            // Reset active classes
-            if (textElement) textElement.classList.remove("active");
-            if (imgElement) imgElement.classList.remove("visible");
-            if (descriptionElement) descriptionElement.classList.remove("active");
-        });
+//             // Reset active classes
+//             if (textElement) textElement.classList.remove("active");
+//             if (imgElement) imgElement.classList.remove("visible");
+//             if (descriptionElement) descriptionElement.classList.remove("active");
+//         });
   
-    }
+//     }
   
-    // Function to activate the clicked section
-    function activateSection(targetClass) {
-        console.log("Activating section for:", targetClass);
+//     // Function to activate the clicked section
+//     function activateSection(targetClass) {
+//         console.log("Activating section for:", targetClass);
   
-        // Find the corresponding section with the matching data-swap
-        const targetSection = document.querySelector(`.locker__section[data-swap="${targetClass}"]`);
-        if (!targetSection) {
-            console.log("Target section not found for class:", targetClass);
-            return;
-        }
+//         // Find the corresponding section with the matching data-swap
+//         const targetSection = document.querySelector(`.locker__section[data-swap="${targetClass}"]`);
+//         if (!targetSection) {
+//             console.log("Target section not found for class:", targetClass);
+//             return;
+//         }
   
-        // Select the elements inside the section
-        const textElement = targetSection.querySelector(`.text.${targetClass}`);
-        const imgElement = targetSection.querySelector("img");
-        const descriptionElement = textElement?.nextElementSibling;
+//         // Select the elements inside the section
+//         const textElement = targetSection.querySelector(`.text.${targetClass}`);
+//         const imgElement = targetSection.querySelector("img");
+//         const descriptionElement = textElement?.nextElementSibling;
   
-        // Debugging: Log elements to verify they're found
-        console.log("Text Element:", textElement); // Debugging
-        console.log("Image Element:", imgElement); // Debugging
-        console.log("Description Element:", descriptionElement); // Debugging
+//         // Debugging: Log elements to verify they're found
+//         console.log("Text Element:", textElement); // Debugging
+//         console.log("Image Element:", imgElement); // Debugging
+//         console.log("Description Element:", descriptionElement); // Debugging
   
-        // Check if the textElement exists before proceeding
-        if (textElement) {
-            textElement.classList.add("active");
-        } else {
-            console.log("No text element found for target class:", targetClass);
-        }
+//         // Check if the textElement exists before proceeding
+//         if (textElement) {
+//             textElement.classList.add("active");
+//         } else {
+//             console.log("No text element found for target class:", targetClass);
+//         }
   
-        // If image element is found, make it visible
-        if (imgElement) {
-            imgElement.classList.add("visible");
-            // Scroll the image into view and center it
-            imgElement.scrollIntoView({
-                behavior: "smooth",
-                block: "center" // Center the image
-            });
-        } else {
-            console.log("No image element found for target class:", targetClass);
-        }
+//         // If image element is found, make it visible
+//         if (imgElement) {
+//             imgElement.classList.add("visible");
+//             // Scroll the image into view and center it
+//             imgElement.scrollIntoView({
+//                 behavior: "smooth",
+//                 block: "center" // Center the image
+//             });
+//         } else {
+//             console.log("No image element found for target class:", targetClass);
+//         }
   
-        // If description element exists, make it active
-        if (descriptionElement) {
-            descriptionElement.classList.add("active");
-        } else {
-            console.log("No description element found for target class:", targetClass);
-        }
+//         // If description element exists, make it active
+//         if (descriptionElement) {
+//             descriptionElement.classList.add("active");
+//         } else {
+//             console.log("No description element found for target class:", targetClass);
+//         }
   
-        // Change background based on the activated section
-        if (textElement && textElement.classList.contains("text--1")) {
-          mainElement.style.backgroundImage = "radial-gradient(farthest-corner at 0% 90%, #FFF5F5 30%, #F0F6FF 60%, #F0F6FF 100%)";
-          mainElement.style.backgroundColor = "";
-        } else if (textElement && textElement.classList.contains("text--2")) {
-          mainElement.style.backgroundColor = "";
-          mainElement.style.backgroundImage = "radial-gradient(farthest-corner at 0% 90%, #F2F1FC 30%, #F0F6FF 50%, #F0F6FF 100%)";
-        } else if (textElement && textElement.classList.contains("text--3")) {
-          mainElement.style.backgroundImage = "";
-          mainElement.style.backgroundColor = "rgba(255, 165, 0, .5)";
-        } else if (textElement && textElement.classList.contains("text--4")) {
-          mainElement.style.backgroundImage = "";
-          mainElement.style.backgroundColor = "rgba(255, 0, 0, .5)";
-      } else if (textElement && textElement.classList.contains("text--5")) {
-          mainElement.style.backgroundImage = "";
-          mainElement.style.backgroundColor = "rgba(255, 165, 0, .5)";
-      } 
+//         // Change background based on the activated section
+//         if (textElement && textElement.classList.contains("text--1")) {
+//           mainElement.style.backgroundImage = "radial-gradient(farthest-corner at 0% 90%, #FFF5F5 30%, #F0F6FF 60%, #F0F6FF 100%)";
+//           mainElement.style.backgroundColor = "";
+//         } else if (textElement && textElement.classList.contains("text--2")) {
+//           mainElement.style.backgroundColor = "";
+//           mainElement.style.backgroundImage = "radial-gradient(farthest-corner at 0% 90%, #F2F1FC 30%, #F0F6FF 50%, #F0F6FF 100%)";
+//         } else if (textElement && textElement.classList.contains("text--3")) {
+//           mainElement.style.backgroundImage = "";
+//           mainElement.style.backgroundColor = "rgba(255, 165, 0, .5)";
+//         } else if (textElement && textElement.classList.contains("text--4")) {
+//           mainElement.style.backgroundImage = "";
+//           mainElement.style.backgroundColor = "rgba(255, 0, 0, .5)";
+//       } else if (textElement && textElement.classList.contains("text--5")) {
+//           mainElement.style.backgroundImage = "";
+//           mainElement.style.backgroundColor = "rgba(255, 165, 0, .5)";
+//       } 
       
-    }
+//     }
+  
+//     headers.forEach(header => {
+//       console.log("Attaching click listener to header:", header);  // Debugging
+//       header.addEventListener("click", (event) => {
+//           console.log("Header clicked:", header);
+ 
+//           // Get the target class based on the clicked header's class (text--1, text--2, text--3)
+//           const targetClass = header.querySelector("h1").classList[1]; // Assuming text--1, text--2, or text--3 is always present
+//           console.log("Target class for section:", targetClass);  // Debugging
+ 
+//           // Reset all sections and styles before activating the new one
+//           resetActiveContent();
+ 
+//           // Activate the clicked section
+//           activateSection(targetClass);
+//       });
+//   });
+ 
+
+    
   
   
-  
-    // Event listener for headers
-    headers.forEach(header => {
-        console.log("Attaching click listener to header:", header);  // Debugging
-        header.addEventListener("click", (event) => {
-            event.preventDefault();  // Optional, depending on the behavior you're expecting
-            console.log("Header clicked:", header);
-  
-            // Get the target class based on the clicked header's class (text--1, text--2, text--3)
-            const targetClass = header.querySelector("h1").classList[1]; // Assuming text--1, text--2, or text--3 is always present
-            console.log("Target class for section:", targetClass);  // Debugging
-  
-            // Reset all sections and styles before activating the new one
-            resetActiveContent();
-  
-            // Activate the clicked section
-            activateSection(targetClass);
-        });
-    });
-  
-    // Intersection Observer setup for scrolling
-    const options = { threshold: 0.5 };
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-            const targetClass = entry.target.dataset.swap;
-            const textElement = document.querySelector(`.text.${targetClass}`);
-            const imgElement = entry.target.querySelector("img");
-            const descriptionElement = textElement?.nextElementSibling;
+//     // Intersection Observer setup for scrolling
+//     const options = { threshold: 0.5 };
+//     const observer = new IntersectionObserver((entries) => {
+//       let isAnySectionIntersecting = false;
+
+//         entries.forEach((entry) => {
+//             const targetClass = entry.target.dataset.swap;
+//             const textElement = document.querySelector(`.text.${targetClass}`);
+//             const imgElement = entry.target.querySelector("img");
+//             const descriptionElement = textElement?.nextElementSibling;
   
   
-            // Log to ensure the target element is intersecting
-            console.log("Entry isIntersecting:", entry.isIntersecting);
+//             // Log to ensure the target element is intersecting
+//             console.log("Entry isIntersecting:", entry.isIntersecting);
+
+//             if (entry.isIntersecting === false) {
+//               mainElement.style.backgroundImage = "";
+//               mainElement.style.backgroundColor = "";
+//               }
   
-            if (entry.isIntersecting) {
-                // Make the corresponding text and image visible
-                textElement?.classList.add("active");
-                imgElement?.classList.add("visible");
-                if (descriptionElement) descriptionElement.classList.add("active");
+//             if (entry.isIntersecting) {
+//               isAnySectionIntersecting = true;
   
+//                 if (textElementOne && textElement !== textElementOne) {
+//                   textElementOne.style.opacity = ".3";
+//                   console.log('test');
+//               } else if (textElementOne && textElement === textElementOne) {
+//                 textElementOne.style.opacity = "1";
+//                 console.log('test 2');
+//               } 
+    
+
+//     textElement?.classList.add("active");
+//     imgElement?.classList.add("visible");
+//     if (descriptionElement) descriptionElement.classList.add("active");
+
+//     if (textElement && textElement.classList.contains("text--1")) {
+//         mainElement.style.backgroundImage = "radial-gradient(farthest-corner at 0% 100%, rgba(255, 245, 245, .85) 50%, rgba(240, 246, 255, .85) 65%, rgba(240, 246, 255, .85) 100%)";
+//         mainElement.style.backgroundColor = "";
+//         // testOne.style.filter = "none";
+//     } else if (textElement && textElement.classList.contains("text--2")) {
+//         mainElement.style.backgroundImage = "radial-gradient(farthest-corner at 0% 100%, rgba(255, 245, 245, .85) 0%, rgba(242, 241, 252, .85) 55%, rgba(240, 246, 255, .85) 60%, rgba(240, 246, 255, .8) 100%)";
+//         mainElement.style.backgroundColor = "";
+//         // testOne.style.filter = "blur(1.25px)";
+//         // testTwo.style.filter = "none";
+//     } else if (textElement && textElement.classList.contains("text--3")) {
+//       //  testTwo.style.filter = "blur(1.25px)";
+//       //  testThree.style.filter = "none";
+//         mainElement.style.backgroundImage = "";
+//         mainElement.style.backgroundColor = "rgba(255, 165, 0, .5)";
+//     } else if (textElement && textElement.classList.contains("text--4")) {
+//         // testThree.style.filter = "blur(1.25px)";
+//         // testFour.style.filter = "none";
+//         mainElement.style.backgroundImage = "";
+//         mainElement.style.backgroundColor = "rgba(255, 0, 0, .5)";
+//     } else if (textElement && textElement.classList.contains("text--5")) {
+//         // testFour.style.filter = "blur(1.25px)";
+//         mainElement.style.backgroundImage = "";
+//         mainElement.style.backgroundColor = "rgba(255, 165, 0, .5)";
+//     }
+// } else {
+//     textElement?.classList.remove("active");
+//     imgElement?.classList.remove("visible");
+//     if (descriptionElement) descriptionElement.classList.remove("active");
+// }
+// });
+
+// if (!isAnySectionIntersecting) {
+// mainElement.style.backgroundImage = "";
+// mainElement.style.backgroundColor = "";
+// }
+// }, options);
   
-                if (textElementOne && textElement !== textElementOne) {
-                  textElementOne.style.opacity = "0.3";
-              } else if (textElementOne && textElement === textElementOne) {
-                  textElementOne.style.opacity = "1";
-              } 
-  
-            } else {
-                // Remove visibility when out of view
-                textElement?.classList.remove("active");
-                imgElement?.classList.remove("visible");
-                if (descriptionElement) descriptionElement.classList.remove("active");
-            }
-  
-  
-          const testOne = document.querySelector('.test--1');
-          const testTwo = document.querySelector('.test--2');
-          const testThree = document.querySelector('.test--3');
-          const testFour = document.querySelector('.test--4');
-          const testFive = document.querySelector('.test--5');
-  
-          const mainElement = document.querySelector('main');
-  
-            // If any textElement is intersecting, change background style
-            if (entry.isIntersecting) {
-                if (textElement === document.querySelector(".text--1")) {
-                  mainElement.style.backgroundImage = "radial-gradient(farthest-corner at 0% 100%, rgba(255, 245, 245, .85) 50%, rgba(240, 246, 255, .85) 65%, rgba(240, 246, 255, .85) 100%)";
-                  mainElement.style.backgroundColor = "";
-                    testOne.style.filter = "none";
-                } else if (textElement === document.querySelector(".text--2")) {
-                    testOne.style.filter = "blur(1.25px)";
-                    testTwo.style.filter = "none";
-                    mainElement.style.backgroundColor = "";
-                    mainElement.style.backgroundImage = "radial-gradient(farthest-corner at 0% 100%, rgba(255, 245, 245, .85) 0%, rgba(242, 241, 252, .85) 55%, rgba(240, 246, 255, .85) 60%, rgba(240, 246, 255, .8) 100%)";
-                } else if (textElement === document.querySelector(".text--3")) {
-                  testTwo.style.filter = "blur(1.25px)";
-                  testThree.style.filter = "none";
-                  mainElement.style.backgroundImage = "";
-                  mainElement.style.backgroundColor = "rgba(255, 165, 0, .5)";
-                } else if (textElement && textElement.classList.contains("text--4")) {
-                  testThree.style.filter = "blur(1.25px)";
-                  testFour.style.filter = "none";
-                  mainElement.style.backgroundImage = "";
-                  mainElement.style.backgroundColor = "rgba(255, 0, 0, .5)";
-              } else if (textElement && textElement.classList.contains("text--5")) {
-                  testFour.style.filter = "blur(1.25px)";
-                  mainElement.style.backgroundImage = "";
-                  mainElement.style.backgroundColor = "rgba(255, 165, 0, .5)";
-              } else if ((textElement !== document.querySelector(".text--1")) || (textElement !== document.querySelector(".text--2")) || (textElement !== document.querySelector(".text--3")) || (textElement !== document.querySelector(".text--4")) || (textElement !== document.querySelector(".text--5"))) {
-                  mainElement.style.backgroundColor = "";
-              }
-            } else {
-                // Optional: Reset the background styles when no text is intersecting
-              //   mainElement.body.style.backgroundImage = "radial-gradient(farthest-corner at 0% 100%, #FFF5F5 0%, #F0F6FF 70%, #F0F6FF 100%)";
-              //   mainElement.style.backgroundColor = "";
-            }
-  
-  
-        });
-    }, options);
-  
-    // Start observing each section
-    sections.forEach((section) => observer.observe(section));
-  });
+//     // Start observing each section
+//     sections.forEach((section) => observer.observe(section));
+//   });
   
 
 //   document.addEventListener("DOMContentLoaded", () => {
@@ -1060,11 +1288,586 @@ if (module.hot) {
 
 
 
+
+  //  document.addEventListener("DOMContentLoaded", () => {
+
+  //   // window.scrollTo(0, 0);  
+  
+  //   const sections = document.querySelectorAll(".locker__section");
+  //   const headers = document.querySelectorAll(".header");
+  
+  //   const mainElement = document.querySelector('main');
+  //   // const projectsSection = document.querySelector(".projects-section");
+  
+  //   // mainElement.style.backgroundImage = "radial-gradient(at 30% 50%, rgba(255, 245, 245, .75) 38%, rgba(240, 246, 255, 0.75) 80%, rgba(240, 246, 255, 0.75) 100%)";
+  //   mainElement.style.backgroundColor = "";
+  
+    
+  
+  //       const textElementOne = document.querySelector(".text--1");
+  
+  //     // Set text--1 opacity to 1 on load
+  //     if (textElementOne) {
+  //         textElementOne.style.opacity = "1";
+  //     } else {
+  //         console.error("text--1 not found in the DOM.");
+  //     }
+        
+  
+  //   // Function to reset all sections and styles
+  //   function resetActiveContent() {
+  //       console.log("Resetting active content");
+  
+  //       sections.forEach((section) => {
+  //           const textElement = section.querySelector(".text");
+  //           const imgElement = section.querySelector("img");
+  //           const descriptionElement = textElement?.nextElementSibling;
+  
+  //           // Reset active classes
+  //           if (textElement) textElement.classList.remove("active");
+  //           if (imgElement) imgElement.classList.remove("visible");
+  //           if (descriptionElement) {
+  //             descriptionElement.classList.remove("active");
+  //             descriptionElement.style.maxHeight = '0'; 
+  //           }
+            
+  //       });
+  
+  //   }
+  
+  //   // Function to activate the clicked section
+  //   function activateSection(targetClass) {
+  //       console.log("Activating section for:", targetClass);
+  
+  //       // Find the corresponding section with the matching data-swap
+  //       const targetSection = document.querySelector(`.locker__section[data-swap="${targetClass}"]`);
+  //       if (!targetSection) {
+  //           console.log("Target section not found for class:", targetClass);
+  //           return;
+  //       }
+  
+  //       // Select the elements inside the section
+  //       const textElement = targetSection.querySelector(`.text.${targetClass}`);
+  //       const imgElement = targetSection.querySelector("img");
+  //       const descriptionElement = textElement?.nextElementSibling;
+  
+  //       // Debugging: Log elements to verify they're found
+  //       console.log("Text Element:", textElement); // Debugging
+  //       console.log("Image Element:", imgElement); // Debugging
+  //       console.log("Description Element:", descriptionElement); // Debugging
+  
+  //       // Check if the textElement exists before proceeding
+  //       if (textElement) {
+  //           textElement.classList.add("active");
+  //       } else {
+  //           console.log("No text element found for target class:", targetClass);
+  //       }
+  
+  //       // If image element is found, make it visible
+  //       if (imgElement) {
+  //           imgElement.classList.add("visible");
+  //           // Scroll the image into view and center it
+  //           imgElement.scrollIntoView({
+  //               behavior: "smooth",
+  //               block: "center" // Center the image
+  //           });
+  //       } else {
+  //           console.log("No image element found for target class:", targetClass);
+  //       }
+  
+  //       // If description element exists, make it active
+  //       if (descriptionElement) {
+  //           descriptionElement.classList.add("active");
+  //       } else {
+  //           console.log("No description element found for target class:", targetClass);
+  //       }
+  
+  //       // Change background based on the activated section
+  //       if (textElement && textElement.classList.contains("text--1")) {
+  //         mainElement.style.backgroundImage = "radial-gradient(farthest-corner at 0% 90%, #FFF5F5 30%, #F0F6FF 60%, #F0F6FF 100%)";
+  //         mainElement.style.backgroundColor = "";
+  //       } else if (textElement && textElement.classList.contains("text--2")) {
+  //         mainElement.style.backgroundColor = "";
+  //         mainElement.style.backgroundImage = "radial-gradient(farthest-corner at 0% 90%, #F2F1FC 30%, #F0F6FF 50%, #F0F6FF 100%)";
+  //       } else if (textElement && textElement.classList.contains("text--3")) {
+  //         mainElement.style.backgroundImage = "";
+  //         mainElement.style.backgroundColor = "rgba(255, 165, 0, .5)";
+  //       } else if (textElement && textElement.classList.contains("text--4")) {
+  //         mainElement.style.backgroundImage = "";
+  //         mainElement.style.backgroundColor = "rgba(255, 0, 0, .5)";
+  //     } else if (textElement && textElement.classList.contains("text--5")) {
+  //         mainElement.style.backgroundImage = "";
+  //         mainElement.style.backgroundColor = "rgba(255, 165, 0, .5)";
+  //     } 
+      
+  //   }
+  
+  
+  
+  //   // Event listener for headers
+  //   headers.forEach(header => {
+  //       console.log("Attaching click listener to header:", header);  // Debugging
+  //       header.addEventListener("click", (event) => {
+  //           event.preventDefault();  // Optional, depending on the behavior you're expecting
+  //           console.log("Header clicked:", header);
+  
+  //           // Get the target class based on the clicked header's class (text--1, text--2, text--3)
+  //           const targetClass = header.querySelector("h1").classList[1]; // Assuming text--1, text--2, or text--3 is always present
+  //           console.log("Target class for section:", targetClass);  // Debugging
+  
+  //           // Reset all sections and styles before activating the new one
+  //           resetActiveContent();
+  
+  //           // Activate the clicked section
+  //           activateSection(targetClass);
+  //       });
+  //   });
+  
+  //   // Intersection Observer setup for scrolling
+  //   const options = { threshold: 0.5 };
+  //   const observer = new IntersectionObserver((entries) => {
+  //       entries.forEach((entry) => {
+  //           const targetClass = entry.target.dataset.swap;
+  //           const textElement = document.querySelector(`.text.${targetClass}`);
+  //           const imgElement = entry.target.querySelector("img");
+  //           const descriptionElement = textElement?.nextElementSibling;
+  
+  
+  //           // Log to ensure the target element is intersecting
+  //           console.log("Entry isIntersecting:", entry.isIntersecting);
+                
+  
+  //           if (entry.isIntersecting) {
+  //               // Make the corresponding text and image visible
+  //               textElement?.classList.add("active");
+  //               imgElement?.classList.add("visible");
+  //               if (descriptionElement) descriptionElement.classList.add("active");
+  
+  
+  //               if (textElementOne && textElement !== textElementOne) {
+  //                 textElementOne.style.opacity = "0.3";
+  //             } else if (textElementOne && textElement === textElementOne) {
+  //                 textElementOne.style.opacity = "1";
+  //             } 
+  
+
+              
+  //           } else {
+  //               // Remove visibility when out of view
+  //               textElement?.classList.remove("active");
+  //               imgElement?.classList.remove("visible");
+  //               if (descriptionElement) descriptionElement.classList.remove("active");
+  //           }
+  
+  
+  //         const testOne = document.querySelector('.test--1');
+  //         const testTwo = document.querySelector('.test--2');
+  //         const testThree = document.querySelector('.test--3');
+  //         const testFour = document.querySelector('.test--4');
+  //         const testFive = document.querySelector('.test--5');
+  
+  //         const mainElement = document.querySelector('main');
+  
+  //           // If any textElement is intersecting, change background style
+  //           if (entry.isIntersecting) {
+  //               if (textElement === document.querySelector(".text--1")) {
+  //                 mainElement.style.backgroundImage = "radial-gradient(farthest-corner at 0% 100%, rgba(255, 245, 245, .85) 50%, rgba(240, 246, 255, .85) 65%, rgba(240, 246, 255, .85) 100%)";
+  //                 mainElement.style.backgroundColor = "";
+  //                   testOne.style.filter = "none";
+  //               } else if (textElement === document.querySelector(".text--2")) {
+  //                   testOne.style.filter = "blur(1.25px)";
+  //                   testTwo.style.filter = "none";
+  //                   mainElement.style.backgroundColor = "";
+  //                   mainElement.style.backgroundImage = "radial-gradient(farthest-corner at 0% 100%, rgba(255, 245, 245, .85) 0%, rgba(242, 241, 252, .85) 55%, rgba(240, 246, 255, .85) 60%, rgba(240, 246, 255, .8) 100%)";
+  //               } else if (textElement === document.querySelector(".text--3")) {
+  //                 testTwo.style.filter = "blur(1.25px)";
+  //                 testThree.style.filter = "none";
+  //                 mainElement.style.backgroundImage = "";
+  //                 mainElement.style.backgroundColor = "rgba(255, 165, 0, .5)";
+  //               } else if (textElement && textElement.classList.contains("text--4")) {
+  //                 testThree.style.filter = "blur(1.25px)";
+  //                 testFour.style.filter = "none";
+  //                 mainElement.style.backgroundImage = "";
+  //                 mainElement.style.backgroundColor = "rgba(255, 0, 0, .5)";
+  //             } else if (textElement && textElement.classList.contains("text--5")) {
+  //                 testFour.style.filter = "blur(1.25px)";
+  //                 mainElement.style.backgroundImage = "";
+  //                 mainElement.style.backgroundColor = "rgba(255, 165, 0, .5)";
+  //             } else if ((textElement !== document.querySelector(".text--1")) || (textElement !== document.querySelector(".text--2")) || (textElement !== document.querySelector(".text--3")) || (textElement !== document.querySelector(".text--4")) || (textElement !== document.querySelector(".text--5"))) {
+  //                 mainElement.style.backgroundColor = "";
+  //             }
+  //           } else {
+  //               // Optional: Reset the background styles when no text is intersecting
+  //             //   mainElement.body.style.backgroundImage = "radial-gradient(farthest-corner at 0% 100%, #FFF5F5 0%, #F0F6FF 70%, #F0F6FF 100%)";
+  //             //   mainElement.style.backgroundColor = "";
+  //           }
+  
+  
+  //       });
+  //   }, options);
+  
+  //   // Start observing each section
+  //   sections.forEach((section) => observer.observe(section));
+  // });
+
+
+
+//   document.addEventListener("DOMContentLoaded", () => {
+//     var played = false; // Flag to check if the audio has been played
+
+//     // Get the section with class .text--4
+//     const sectionText4 = document.querySelector('.text--4');
+//     const countdownSound = new Audio('./audio/the-vibe.mp3'); // Your countdown audio
+//     const lockerSections = document.querySelector('.locker__sections'); // The scrollable section
+
+//     // Track the scroll event on the .locker__sections element
+//     lockerSections.addEventListener('scroll', function() {
+//         var elemTop = sectionText4.offsetTop - lockerSections.offsetTop, // Top of the section relative to .locker__sections
+//             elemHeight = sectionText4.offsetHeight, // Height of the section
+//             containerHeight = lockerSections.clientHeight, // Height of the scrollable container
+//             containerScroll = lockerSections.scrollTop; // Current scroll position within .locker__sections
+
+//         // Check if the user has scrolled to the section
+//         if (containerScroll + containerHeight > elemTop + elemHeight && !played) {
+//             countdownSound.play(); // Play the countdown sound
+//             played = true; // Set the flag to true so the sound only plays once
+//         }
+//     });
+// });
+
+
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const sections = document.querySelectorAll(".locker__section");
+    const headers = document.querySelectorAll(".header");
+    const mainElement = document.querySelector('main');
+    const textElementOne = document.querySelector(".text--1");
+    const textElementTwo = document.querySelector(".text--2");
+    const textElementThree = document.querySelector(".text--2");
+    const imageFour = document.querySelector(".image--4");
+    const sectionsBackground = document.getElementById('locker__sections-background');
+    const headerText = document.querySelectorAll(".locker__container h1");
+    const audio = document.getElementById("audio");
+    const lockerSections = document.querySelector(".locker__sections");
+
+
+    // Flag to check if the user has scrolled or clicked at least once
+    let userHasInteracted = false;
+
+  // Detect the first scroll event on .locker__sections
+  lockerSections.addEventListener("scroll", () => {
+    if (!userHasInteracted) {
+        userHasInteracted = true;
+        console.log('User scrolled within .locker__sections');
+    }
+});
+
+    
+    // Detect the first click event to ensure the browser allows audio to play
+    document.body.addEventListener("click", () => {
+        if (!userHasInteracted) {
+            userHasInteracted = true;
+            console.log('click')
+        }
+    });
+
+    // Detect the first click event to ensure the browser allows audio to play
+    document.body.addEventListener("mousemove", () => {
+      if (!userHasInteracted) {
+          userHasInteracted = true;
+          console.log('click')
+      }
+  });
+
+
+    // Set to track intersected elements
+    const intersectedTextElements = new Map ();
+
+    // Set text--1 opacity to 1 on load
+    if (textElementOne) {
+        textElementOne.style.opacity = "1";
+        textElementOne.style.color = "#0f0f0f";
+    } else {
+        console.error("text--1 not found in the DOM.");
+    }
+
+    // Function to reset background and opacity
+    function resetStyles() {
+        mainElement.style.backgroundImage = "";
+        mainElement.style.backgroundColor = "";
+        if (textElementOne) textElementOne.style.opacity = "1";
+    }
+
+
+          //     const testOne = document.querySelector('.test--1');
+          // const testTwo = document.querySelector('.test--2');
+          // const testThree = document.querySelector('.test--3');
+          // const testFour = document.querySelector('.test--4');
+          // const testFive = document.querySelector('.test--5');
+
+
+    // Function to handle background updates based on text elements
+    function updateBackgroundAndOpacity(textElement) {
+        if (textElement === document.querySelector(".text--1")) {
+            // mainElement.style.backgroundImage = "radial-gradient(farthest-corner at 0% 100%, #E9F2EF 0%, #E9F2EF 30%, #F2E9EC 85%)";
+            mainElement.style.backgroundImage = "radial-gradient(farthest-corner at 0% 100%, #E9F2EF 0%, #E9F2EF 30%, #F2E9EC 85%, #F2E9EC00 100%)";
+            // mainElement.style.backgroundImage = "radial-gradient(ellipse 99% 99% at 25% 75%, rgb(233, 242, 239) 0%, rgb(233, 242, 239) 30%, rgb(242, 233, 236) 75%, rgba(242, 233, 236, 0) 95%)";
+            sectionsBackground.style.backgroundImage = "url('./img/Texture.png')";
+            mainElement.style.backgroundColor = "";
+          //   headerText.forEach(header => {
+          //     header.style.color = "#DCC4D7"; 
+          //     header.style.opacity = ".7"; 
+          // });
+            if (textElementOne) textElementOne.style.opacity = "1";
+            textElementOne.style.color = "#0F0F0F";
+        } else if (textElement && textElement.classList.contains("text--2")) {
+        //   headerText.forEach(header => {
+        //     header.style.color = "#A2A2A2"; 
+        //     header.style.opacity = ".45"; 
+        // });
+        // if (textElementTwo) textElementTwo.style.opacity = "1";
+        // textElementTwo.style.color = "#0F0F0F";
+           
+            mainElement.style.backgroundColor = "";
+            // mainElement.style.backgroundImage = "radial-gradient(farthest-corner at 0% 90%, #F2F1FC 30%, #F0F6FF 50%, #F0F6FF 100%)";
+            if (textElementOne) {
+              textElementOne.style.opacity = "0.45";
+              textElementOne.style.color = "#A2A2A2";
+            }
+        } else if (textElement && textElement.classList.contains("text--3")) {
+        //  textElementTwo.style.opacity = ".45";
+        //   textElementTwo.style.color = "#A2A2A2";
+        //    textElementThree.style.opacity = "1";
+        //   textElementThree.style.color = "#0F0F0F";
+            mainElement.style.backgroundImage = "";
+            // mainElement.style.backgroundColor = "rgba(255, 165, 0, .5)";
+            // fadeOutAudio(audio, 5);
+        } else if (textElement && textElement.classList.contains("text--4")) {
+            mainElement.style.backgroundImage = "";
+            // mainElement.style.backgroundColor = "rgba(255, 0, 0, .5)";
+       
+            if (userHasInteracted) {
+              // If image4 comes into view and user has interacted, fade-in the audio
+              fadeInAudio(audio, 5);
+              console.log('hi')
+          } else {
+              // If image4 leaves the view, fade-out the audio
+              fadeOutAudio(audio, 5);
+              console.log('bye')
+          }
+    } else if (textElement && textElement.classList.contains("text--5")) {
+      // fadeOutAudio(audio, 5);
+            mainElement.style.backgroundImage = "";
+            imageFour.style.border = ""
+            // mainElement.style.backgroundColor = "rgba(255, 165, 0, .5)";
+        }
+    }
+
+
+    function fadeInAudio(audio, duration) {
+        let startTime = null;
+
+        function fadeStep(timestamp) {
+            if (!startTime) startTime = timestamp;
+            const progress = (timestamp - startTime) / (duration * 1000);
+
+            if (progress < 1) {
+                audio.volume = progress; // Increase volume gradually
+                requestAnimationFrame(fadeStep);
+            } else {
+                audio.volume = 1; // Ensure volume is fully 1 after the fade-in
+            }
+        }
+
+        audio.currentTime = 0; // Reset the audio to the start
+        audio.play().catch(error => {
+            console.error("Audio play failed:", error);
+        }); // Start the audio
+        requestAnimationFrame(fadeStep); // Start the fade-in animation
+    }
+
+    // Fade-out function to gradually decrease the volume
+    function fadeOutAudio(audio, duration) {
+        let startTime = null;
+
+        function fadeStep(timestamp) {
+            if (!startTime) startTime = timestamp;
+            const progress = (timestamp - startTime) / (duration * 1000);
+
+            if (progress < 1) {
+                audio.volume = 1 - progress; // Decrease volume gradually
+                requestAnimationFrame(fadeStep);
+            } else {
+                audio.volume = 0; // Ensure volume is fully 0 after fade-out
+                audio.pause(); // Pause the audio when it reaches the end of the fade
+                audio.currentTime = 0; // Reset to the start
+            }
+        }
+
+        requestAnimationFrame(fadeStep); // Start the fade-out animation
+    }
+
+    // Function to reset all sections
+    function resetActiveContent() {
+        sections.forEach((section) => {
+            const textElement = section.querySelector(".text");
+            const imgElement = section.querySelector("img");
+            const descriptionElement = textElement?.nextElementSibling;
+
+            if (textElement) textElement.classList.remove("active");
+            if (imgElement) imgElement.classList.remove("visible");
+            if (descriptionElement) {
+                descriptionElement.classList.remove("active");
+                descriptionElement.style.maxHeight = '0';
+            }
+        });
+    }
+
+    // Function to activate a specific section
+    function activateSection(targetClass) {
+        const targetSection = document.querySelector(`.locker__section[data-swap="${targetClass}"]`);
+        if (!targetSection) return;
+
+        const textElement = targetSection.querySelector(`.text.${targetClass}`);
+        const imgElement = targetSection.querySelector("img");
+        const descriptionElement = textElement?.nextElementSibling;
+
+        if (textElement) textElement.classList.add("active");
+        if (imgElement) {
+            imgElement.classList.add("visible");
+            imgElement.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+        if (descriptionElement) descriptionElement.classList.add("active");
+
+        updateBackgroundAndOpacity(textElement);
+    }
+
+    // Event listener for headers
+    headers.forEach(header => {
+        header.addEventListener("click", (event) => {
+            event.preventDefault();
+            const targetClass = header.querySelector("h1").classList[1];
+            resetActiveContent();
+            activateSection(targetClass);
+        });
+    });
+
+    // Intersection Observer setup for scrolling
+    const options = { threshold: 0.5 };
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            const targetClass = entry.target.dataset.swap;
+            const textElement = document.querySelector(`.text.${targetClass}`);
+            const imgElement = entry.target.querySelector("img");
+            const descriptionElement = textElement?.nextElementSibling;
+            // const imgContainer = document.querySelector('.image-container')
+
+
+
+            if (entry.isIntersecting) {
+              if (textElement) {
+                  textElement.classList.add("active");
+
+                  // // Only apply the blur after leaving the active state
+                  // if (!intersectedTextElements.has(targetClass)) {
+                  //     // First time intersecting (after removing active class)
+                  //     intersectedTextElements.set(targetClass, "first");
+                  // } else if (intersectedTextElements.get(targetClass) === "first") {
+                  //     // Remove blur the second time the element is intersected
+                  //     textElement.style.filter = "none";
+                  //     intersectedTextElements.set(targetClass, "second");
+                  // }
+
+                  updateBackgroundAndOpacity(textElement);
+              }
+              imgElement?.classList.add("visible");
+              descriptionElement?.classList.add("active");
+
+              if (targetClass === "text--4") {
+
+              }
+          } else {
+              textElement?.classList.remove("active");
+              imgElement?.classList.remove("visible");
+              descriptionElement?.classList.remove("active");
+
+              // // After the active class is removed, apply blur
+              // if (textElement && intersectedTextElements.has(targetClass)) {
+              //     if (intersectedTextElements.get(targetClass) === "first") {
+              //         textElement.style.filter = "blur(1.25px)";
+              //     }
+              //     intersectedTextElements.set(targetClass, "first");
+              // }
+          }
+
+
+
+
+            // Reset styles when scrolling past the top section
+            if (!entry.isIntersecting && targetClass === "text--1") {
+                resetStyles();
+                
+            }
+        });
+    }, options);
+
+    // Start observing each section
+    sections.forEach((section) => observer.observe(section));
+});
+
+
+
+
+
+
+
+
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  const mainElement = document.querySelector('main');
+  const projectOne = document.querySelector(".project-one");
+
+  // Function to reset background and opacity
+  function resetStyles() {
+      mainElement.style.backgroundImage = "";
+      mainElement.style.backgroundColor = "";
+      console.log("Background and styles reset.");
+  }
+
+  // Intersection Observer to track .project-one at 50% viewport
+  const options = {
+      threshold: 0.5 // Trigger when 50% of the element is visible
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+              // If .project-one reaches 50% viewport, reset background and styles
+              if (entry.target.classList.contains("project-one")) {
+                  resetStyles();
+              }
+          }
+      });
+  }, options);
+
+  // Start observing the .project-one element
+  if (projectOne) {
+      observer.observe(projectOne);
+  } else {
+      console.error(".project-one not found in the DOM.");
+  }
+});
+
+
+
+
 document.addEventListener("DOMContentLoaded", () => {
   const projectOne = document.querySelector(".project-one");
   const footer = document.querySelector("footer");
   const projectsSection = document.querySelector(".projects-section");
   const lockerContainer = document.querySelector(".locker__content");
+  const mainElement = document.querySelector('main');
 
   // Shared state to track intersections
   let projectOneInView = false;
@@ -1102,6 +1905,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (entry.target === projectsSection) {
           projectsSectionInView = entry.isIntersecting;
           console.log('test')
+          
         }
         updateLockerVisibility();
       });
@@ -1116,6 +1920,8 @@ document.addEventListener("DOMContentLoaded", () => {
           if (entry.target === footer) {
             footerInView = entry.isIntersecting;
             console.log('best')
+            mainElement.style.backgroundImage = "";
+            mainElement.style.backgroundColor = "";
           }
           updateLockerVisibility();
         });
