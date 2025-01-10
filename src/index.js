@@ -1,8 +1,13 @@
 import _ from 'lodash';
+import './styles.css';
+
 
 if (module.hot) {
     module.hot.accept();
 }
+
+console.log('Hello, world!');
+
 
 // document.addEventListener("DOMContentLoaded", () => {
 //   const sections = document.querySelectorAll(".locker__section");
@@ -848,64 +853,67 @@ logoContainer.addEventListener('click', (event) => {
     behavior: 'smooth',
   });
 });
+document.addEventListener("DOMContentLoaded", function () {
+  // Select the logo-container and hamburger elements
+  const logoIntro = document.querySelector('.logo-container');
+  const hamburgerNav = document.querySelector('.hamburger');
 
-
-  document.addEventListener("DOMContentLoaded", function () {
-      // Select the logo-container and hamburger elements
-      const logoIntro = document.querySelector('.logo-container');
-      const hamburgerNav = document.querySelector('.hamburger');
-
-  
-      if (logoIntro) {
-          logoIntro.classList.add('visible'); // Add the class to trigger the animation
-      }
-  
-      if (hamburgerNav) {
-          hamburgerNav.classList.add('visible'); // Add the class to the hamburger menu
-      }
-
-  
-  });
-  
-
-  
-
-  let hamburgerClicking = false;
-  
-  function hamburgerClick() {
-      if (hamburgerClicking) return; // Prevent multiple rapid clicks
-      hamburgerClicking = true;
-
-  
-      const hamburger = document.querySelector('.main-nav-toggle');
-      const aboutNav = document.querySelector('.about');
-      const workNav = document.querySelector('.work');
-
-      if (hamburger.classList.contains('active-menu')) {
-          hamburger.classList.remove('active-menu');
-              aboutNav.classList.remove('visible'); // Add the class to the hamburger menu
-              workNav.classList.remove('visible'); // Add the class to the hamburger menu
-
-      } else {
-          hamburger.classList.add('active-menu');
-          if (aboutNav) {
-              aboutNav.classList.add('visible'); // Add the class to the hamburger menu
-          }
-  
-          if (workNav) {
-              workNav.classList.add('visible'); // Add the class to the hamburger menu
-          }
-      }
-  
-      setTimeout(() => {
-          hamburgerClicking = false; // Re-enable click after a short delay
-      }, 500);
+  // Ensure the logo and hamburger are visible initially
+  if (logoIntro) {
+      logoIntro.classList.add('visible'); // Show logo
+      console.log('Logo is visible');
   }
 
-  const hamburgerNav = document.querySelector('.hamburger');
-   // Attach the click event to the hamburger
-   hamburgerNav.addEventListener('click', hamburgerClick);
+  if (hamburgerNav) {
+      hamburgerNav.classList.add('visible'); // Show hamburger
+      console.log('Hamburger is visible');
+  }
+});
 
+let hamburgerClicking = false;
+
+function hamburgerClick() {
+  if (hamburgerClicking) return; // Prevent multiple rapid clicks
+  hamburgerClicking = true;
+
+  const hamburger = document.querySelector('.main-nav-toggle');
+  const aboutNav = document.querySelector('.about');
+  const workNav = document.querySelector('.work');
+
+  // Toggle the menu visibility
+  if (hamburger.classList.contains('active-menu')) {
+      hamburger.classList.remove('active-menu');
+      if (aboutNav) {
+          aboutNav.classList.remove('visible'); // Hide about
+          console.log('About section hidden');
+      }
+      if (workNav) {
+          workNav.classList.remove('visible'); // Hide work
+          console.log('Work section hidden');
+      }
+  } else {
+      hamburger.classList.add('active-menu');
+      if (aboutNav) {
+          aboutNav.classList.add('visible'); // Show about
+          console.log('About section visible');
+      }
+      if (workNav) {
+          workNav.classList.add('visible'); // Show work
+          console.log('Work section visible');
+      }
+  }
+
+  // Prevent rapid clicks
+  setTimeout(() => {
+      hamburgerClicking = false;
+  }, 500);
+}
+
+// Attach the click event to the hamburger
+const hamburgerNav = document.querySelector('.hamburger');
+if (hamburgerNav) {
+  hamburgerNav.addEventListener('click', hamburgerClick);
+}
 
 
 

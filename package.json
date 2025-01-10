@@ -4,8 +4,9 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js",
-    "build": "webpack"
+    "build": "NODE_ENV=production webpack",
+    "start": "NODE_ENV=development node server.js",
+    "dev": "webpack serve --mode development"
   },
   "keywords": [],
   "author": "",
@@ -22,10 +23,14 @@
     "sqlite3": "^5.1.7"
   },
   "devDependencies": {
+    "autoprefixer": "^10.4.20",
     "browser-sync": "^3.0.3",
     "css-loader": "^7.1.2",
     "express": "^4.21.2",
+    "file-loader": "^6.2.0",
+    "html-webpack-plugin": "^5.6.3",
     "nodemon": "^3.1.7",
+    "postcss-loader": "^8.1.1",
     "style-loader": "^4.0.0",
     "webpack": "^5.97.1",
     "webpack-cli": "^5.1.4",

@@ -1,49 +1,37 @@
 const sqlite3 = require('sqlite3').verbose();
 const express = require('express');
 const path = require('path');
-const browserSync = require('browser-sync');
-const webpack = require('webpack');
-const webpackDevMiddleWare = require('webpack-dev-middleware');
-const webpackHotMiddleWare = require('webpack-hot-middleware');
 const axios = require('axios');
 const querystring = require('querystring');
 const cors = require('cors');
+const browserSync = require('browser-sync');
 
-const schedule = require('node-schedule');
-
-const webpackConfig = require('./webpack.config.js');
-const compiler = webpack(webpackConfig);
 const app = express();
+const isDevelopment = process.env.NODE_ENV !== 'production';
 
-// Middleware for webpack hot reloading
-app.use(
-    webpackDevMiddleWare(compiler, {
-        publicPath: webpackConfig.output.publicPath,
-    })
-);
-app.use(webpackHotMiddleWare(compiler));
+// Middleware for static file serving
+app.use(express.static(path.join(__dirname, 'public'))); // Serve static files from `public` directory
 
-// Serve static files from the "src" directory
-app.use(express.static(path.join(__dirname, 'src')));
-
-// Serve index.html on the root route
+// Serve index.html for the root route
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'src', 'index.html'));
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // Additional routes
 app.get('/about', (req, res) => {
-    res.sendFile(path.join(__dirname, 'src', 'about.html'));
+    res.sendFile(path.join(__dirname, 'public', 'about.html'));
 });
 
 app.get('/casper-mattress-quiz', (req, res) => {
-    res.sendFile(path.join(__dirname, 'src', 'casper-mattress-quiz.html'));
+    res.sendFile(path.join(__dirname, 'public', 'casper-mattress-quiz.html'));
 });
 
 // Spotify credentials
 const client_id = 'c5c925f6e0f548ec8179875d65d464c3'; // Replace with your actual Client ID
 const client_secret = '44503946562147229b23216f8f945e09'; // Replace with your actual Client Secret
-const redirect_uri = 'http://localhost:3002/callback'; // Ensure this matches your Spotify app redirect URI
+const redirect_uri = isDevelopment
+    ? 'http://localhost:3002/callback'
+    : 'https://node-practice-chi.vercel.app/callback'; // Update with your Vercel domain
 
 // Middleware
 app.use(cors());
@@ -137,14 +125,15 @@ function generateRandomString(length) {
 }
 
 // Start the Express server
-const PORT = 3001;
+const PORT = process.env.PORT || 3002;
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
-    browserSync.init({
-        proxy: `http://localhost:${PORT}`,
-        files: ['src/**/*.*'],
-        port: 3001,
-        open: false,
-    });
+    if (isDevelopment) {
+        browserSync.init({
+            proxy: `http://localhost:${PORT}`,
+            files: ['src/**/*.*', 'public/**/*.*'],
+            port: 3002,
+            open: false,
+        });
+    }
 });
-
