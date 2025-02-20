@@ -33,17 +33,25 @@
         </script>
 
         <!-- Favicon -->
-        <link rel=icon href="/img/favicon1.ico" sizes="any">
+        <link rel=icon href="./img/star.ico" sizes="any">
+        <!-- <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="manifest" href="/site.webmanifest"> -->
 
         <!-- Styles-->
-        <link rel="stylesheet" href="./styles.css">
+        <link rel="stylesheet" href="styles.css" text="text/css">
 
         <!-- GSAP -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.1/ScrollTrigger.min.js"></script>
+         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.1/ScrollSmoother.min.js"></script>
+         
     </head>
 
     <body>
       <main>
+        <audio id="audio-click" src="./audio/click.mp3"></audio>
               <nav class="navigation">
             <div class="logo-container">
                 <a class="button star-logo" rel="home-page" href="#">
@@ -53,100 +61,605 @@
                 </a>
             </div>
             <div class="right-menu">
-            <div class="work">
-              <a class="button">
-                Projects
-              </a>
+              <div class="work">
+                <a class="button" href="#projects-section">
+                  <span class="nav-item">Projects</span>
+                  <span class="nav-item-active">Projects</span>
+                </a>
+              </div>
+              <div class="about">
+                <a class="button" href="#about">
+                  <span class="nav-item">About</span>
+                  <span class="nav-item-active">About</span>
+                </a>
+              </div>
+              <div class="hamburger">
+                <a class="main-nav-toggle" id="no-sound-link" href="#main-nav"></a>
+              </div>
             </div>
-            <div class="about">
-              <a class="button">
-                About
-              </a>
-            </div>
-            <div class="hamburger">
-              <a class="main-nav-toggle" href="#main-nav"></a>
-            </div>
-          </div>
+            
         </nav>
-
 
         <div class="main-container">
         <div class="locker">
           <div class="locker__content">
             <div class="locker__container">
 
-
               <div class="header-one">
               <div class="test--1">
 
-                <div class="header header--1">
-              <h1 class="text text--1">TIFFANY KOVAL<sup>(01)</sup></h1><p class="description description--1">Bay Area based Product Designer. I turn complexity and mess into intuitive and impactful experiences. </p></div>
+                <div class="header header--1 bottom">
+              <h1 class="text text--1">TIFFANY KOVAL<sup class="sup--1">(01)</sup></h1><p class="description description--1">Bay Area based Product Designer. I turn complexity and mess into intuitive and impactful experiences. </p></div>
             </div>
             
             <div class="test--2">
-         <div class="header header--2">
+         <div class="header header--2 top">
               <h1 class="text text--2">PRODUCT DESIGNER<sup>(02)</sup></h1><p class="description description--2">Background in 0->1 design innovation, interaction, brand, and growth at Spotify, Casper, and early stage startups. </p></div>
             </div>
           </div>  
   
           <div class="header-two">
             <div class="test--3">
-               <div class="header header--3">
-              <h1 class="text text--3">INVESTIGATOR<sup>(03)</sup></h1><p class="description description--3">I approach every project with an investigative lenses and an eye for storytelling.</p></div>
+               <div class="header header--3 bottom">
+              <h1 class="text text--3">INVESTIGATOR<sup>(03)</sup></h1><p class="description description--3">I approach every project with an investigative lens, using the who, what, and why’s I uncover to tell a visual and product-driven story. (Drag →)</p></div>
               </div>
   
               <div class="test--4">
-              <div class="header header--4">
-                <h1 class="text text--4">ETC<sup>(04)</sup></h1><p class="description description--4">When I’m not busy designing, you can find me hiking, traveling, or at a music venue. Currently into Electro-Funk. </p></div>
+              <div class="header header--4 top">
+                <h1 class="text text--4">ETC<sup>(04)</sup></h1><p class="description description--4">When I’m not designing, you can find me hiking, traveling, or at a music venue. Currently into Electro-Funk. <span class="click-music-button">(Play music ▶︎)</span></p></div>
                 </div>
 
 
   
-                <!-- <div class="test--5">
+                <div class="test--5">
                   <div class="header header--5">
                     <h1 class="text text--5"></h1></div>
-                    </div> -->
+                    </div>
 
 
             </div>
             </div>
           </div>
+
  
           <div id="locker__sections-background" class="locker__sections">
             <div class="locker__sections-inner">
             <div class="locker__section locker__section--0 text--0" data-swap="text--0">
             </div> 
-            <div class="locker__section locker__section--1" data-swap="text--1">
-              <img class="image image--1" src="img/tiffers.jpg" alt="Image 1">
+            <div class="locker__section locker__section--1" data-swap="text--1" id="about">
+
+              <img class="image image--1" src="./img/tiffers.png" alt="Image 1">
+              <!-- <div class="test">(CLICK ME ↦)</div> -->
+              <!-- <img class="image flash-image image--1" data-id="2" src="./img/bay-area.jpg" alt="Image 1-1"> -->
+              <!-- <img class="image image--3 flash-image" data-id="3" src="./img/tiffers.jpg" alt="Image 1-2">
+              <img class="image image--4 flash-image" data-id="4" src="./img/bay-area.jpg" alt="Image 1-3"> -->
+
             </div>
             <div class="locker__section locker__section--2" data-swap="text--2">
-              <img class="image image--2" src="/img/perceive.png" alt="Image 2">
+      
+              <!-- <img class="image image--2" src="./img/perceive.png" alt="Image 2"> -->
+               
+              <img class="image image--2" alt="Image 2">
+               <div class="image image--2 companylogos-container"  alt="Image 2">
+                <svg id="spotify-logo" class="logo" width="55" height="55" viewBox="0 0 55 55" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M28.591 0.0221123C13.4142 -0.581136 0.622843 11.2325 0.0221078 26.4092C-0.58114 41.5859 11.235 54.3747 26.4093 54.978C41.586 55.5813 54.3748 43.7677 54.9781 28.591C55.5788 13.4142 43.7651 0.622847 28.591 0.0221123ZM40.1984 40.3065C39.8566 40.9098 39.1905 41.2115 38.542 41.121C38.3435 41.0933 38.1449 41.0279 37.959 40.9223C34.3244 38.8537 30.363 37.5065 26.1855 36.9183C22.008 36.3301 17.828 36.5338 13.7636 37.5216C12.8813 37.7351 11.9941 37.1947 11.7804 36.3125C11.5668 35.4303 12.1072 34.5429 12.9894 34.3294C17.4585 33.2435 22.0532 33.0197 26.6429 33.6658C31.2326 34.3118 35.5861 35.7922 39.5851 38.067C40.3719 38.5169 40.6483 39.5173 40.2009 40.3065H40.1984ZM43.8129 33.0876C43.2523 34.1232 41.9554 34.5104 40.9199 33.9499C36.6669 31.6499 32.0622 30.1393 27.2336 29.4606C22.4051 28.7821 17.5641 28.9654 12.8411 30.0035C12.5848 30.0589 12.3309 30.0689 12.0846 30.0337C11.2274 29.913 10.4935 29.2747 10.2974 28.3773C10.0436 27.2262 10.7725 26.0875 11.9237 25.8336C17.1442 24.6849 22.4956 24.4814 27.8294 25.2303C33.1606 25.9794 38.2505 27.6484 42.9508 30.1921C43.9889 30.7526 44.3734 32.047 43.8129 33.0851V33.0876ZM47.8196 24.9514C47.2917 25.9668 46.1933 26.4922 45.1225 26.3413C44.8334 26.3011 44.5494 26.2106 44.2753 26.0699C39.3238 23.4936 33.99 21.7919 28.4226 21.0101C22.8551 20.2284 17.2574 20.3944 11.788 21.5052C10.3653 21.7944 8.98034 20.8744 8.69129 19.4542C8.40223 18.0316 9.32219 16.6467 10.7423 16.3575C16.7999 15.1285 22.9933 14.945 29.1539 15.8096C35.3147 16.6743 41.2164 18.5594 46.701 21.4124C47.9879 22.0808 48.488 23.6669 47.8196 24.9539V24.9514Z" fill="#1ED760"/>
+                  </svg>
+                <svg id="casper-logo" class="logo" width="250" height="250" viewBox="0 0 250 250" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M0 125C0 55.9644 55.9644 0 125 0C194.036 0 250 55.9644 250 125C250 194.036 194.036 250 125 250C55.9644 250 0 194.036 0 125Z" fill="#1E306E"/>
+<path d="M120.112 50C77.0041 50 44 83.6777 44 125.438C44 167.198 77.0041 200.876 120.112 200.876C147.727 200.876 173.322 186.058 184.773 165.178L162.545 153.054C153.789 168.545 138.971 177.302 120.112 177.302C106.64 177.302 93.1694 171.913 84.4132 162.483C74.9835 152.38 69.595 139.583 69.595 126.112C69.595 112.64 74.9835 99.843 84.4132 89.7397C93.1694 80.3099 105.967 74.9215 120.112 74.9215C134.93 74.9215 143.686 79.6364 149.748 84.3512C156.483 89.0661 163.219 93.781 174.669 93.781C195.55 93.781 204.979 76.9422 207 68.186L183.426 63.4711C183.426 64.1446 181.405 70.8802 174.669 70.8802C171.302 70.8802 169.281 69.5331 164.566 66.1653C155.81 58.0826 144.36 50 120.112 50Z" fill="white"/>
+</svg>
+<svg id="portfolio-logo" class="logo" width="55" height="55" viewBox="0 0 55 55" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M27.5 55C42.6878 55 55 42.6878 55 27.5C55 12.3122 42.6878 0 27.5 0C12.3122 0 0 12.3122 0 27.5C0 42.6878 12.3122 55 27.5 55ZM27.4901 31.3372L32.2773 38.4476L35.5158 36.1948L30.7285 29.4364L37.9797 27.1836L36.783 23.382L29.3909 25.9868V17.8204H25.5189V25.9868L18.2677 23.4524L17.0709 27.1836L24.1813 29.4364L19.4645 36.1244L22.7029 38.3772L27.4901 31.3372Z" fill="#0F0F0F"/>
+  </svg>
+              </div>
             </div>
             <div class="locker__section locker__section--3" data-swap="text--3">
-              <img class="image image--3" src="https://via.placeholder.com/480x720" alt="Image 3">
+              <!-- <img id="background-image" src="img_girl.jpg" alt="Background" style="width: 600px; height: 400px; position: absolute; cursor: grab;"> -->
+              <img id="magnifier-glass" class="image image--3" src="./img/magnifying-glass.png"  alt="Magnifying Glass" style="position: absolute; cursor: grab;" >
+              <!-- <div class="test">(Grab me ↦)</div> -->
             </div>
             <div class="locker__section locker__section--4" data-swap="text--4">
               <div class="image-container">         
                
                 <!-- <div class="play-button"></div> -->
-                  <img class="image image--4" src="/img/the-vibe.jpeg" alt="Image 4"></div>
+                  <img class="image image--4" src="./img/the-vibe.jpeg" alt="Image 4">
+                  <div class="overlay-image"></div>
+                  <div class="background-image"></div>
+                  <!-- <div class="test">(Grab me ↦)</div> -->
+                </div>
                   <div class="border"></div>
-                  <audio id="audio" src="/audio/the-vibe.mp3"></audio>
+                  <audio id="audio" src="./audio/the-vibe.mp3"></audio>
               
             </div>
-            <!-- <div class="locker__section locker__section--5" data-swap="text--5">
-              <img class="image image--5" src="https://via.placeholder.com/480x720" alt="Image 5">
-            </div>  -->
+            <div class="locker__section locker__section--5" data-swap="text--5">
+              <img class="image image--5">
+            </div> 
 
     
+        <div class="projects-section" id="projects-section">
+  
 
-        <div class="projects-section">
-          <div class="projects">
-          
-            <div class="project-wrapper">
+              <div class="section first-project">
+                <div class="sticky-container first-container">
+                  <!-- <h3 class="project-title">Reviews Feed<div class="company-name">Casper</div></h3>
+                  <div class="project-description">
+                    <p>Guiding customers from consideration to purchase at a critical mid-funnel touchpoint.</p>
+                  </div> -->
+                  <div class="container-wrapper">
+                    <div class="project-title-description">
+                  <div class="project-left">
+                    <h3 class="project-title">Spotify Premium<div class="company-name">Spotify</div></h3>
+                  </div>
+                  <div class="project-right">
+                    <div class="project-button">
+                       
+                          <svg class="project-lock" width="10" height="13" viewBox="0 0 10 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M2.25 5H7.75V3.75C7.75 2.23122 6.51878 1 5 1C3.48122 1 2.25 2.23122 2.25 3.75V5ZM8.75 5C9.44036 5 10 5.55964 10 6.25V11.75C10 12.4404 9.44036 13 8.75 13H1.25C0.559644 13 0 12.4404 0 11.75V6.25C0 5.55964 0.559644 5 1.25 5V3.75C1.25 1.67893 2.92893 0 5 0C7.07107 0 8.75 1.67893 8.75 3.75V5Z"/>
+                            </svg>
+                    </div>
+                    <div class="project-button-message-locked">(Password required)</div>
+                  </div>
+                </div>
+                <div class="project-description">
+                  <p>Optimized global subscription purchase and retention flows through growth experimentation.</p>
+                </div>
+                  <div class="projects-info-tags">
+                    <span class="tag">Web</span>
+                    <span class="tag">Growth</span>
+                    <span class="tag">A/B Testing</span>
+                    <span class="tag">Development</span>
+                    <span class="tag">Data Analysis</span>
+                  </div>
+                </div>
+                </div>
+            
+                <div class="sticky-container second-container">
+                 <div class="project-image-wrapper project-image-wrapper-1">
+                  <div class="hover-overlay-message">
+                    <a href="#your-link-here" class="hover-link">
+                      <span class="hover-item">View more</span>
+                      <span class="hover-item-active">View more ↗</span>
+                    </a>
+                    <a class="hover-arrow">
+                      <span class="arrow-item">↗</span>
+                      <span class="arrow-item">↗</span>
+                    </a>
+                  </div>                  
+                  <img class="project-image project-image-1 try-out" style="width:30%; border-radius:.3rem;" src="./img/1433.jpg">
+                 </div>
+                 <div class="project-image-wrapper project-image-wrapper-2">
+                  <img class="project-image  project-image-2" style="width:50%;" src="./img/1460-v2.jpg">
+                 </div>
+                 <div class="project-image-wrapper project-image-wrapper-3">
+                  <img class="project-image  project-image-3" style="width:50%;" src="./img/1460-paypal.jpg">
+                 </div>
+               
+                </div>
+              </div>
+
+
+              <div class="section second-project">
+                <div class="sticky-container first-container">
+                  <!-- <h3 class="project-title">Reviews Feed<div class="company-name">Casper</div></h3>
+                  <div class="project-description">
+                    <p>Guiding customers from consideration to purchase at a critical mid-funnel touchpoint.</p>
+                  </div> -->
+                  <div class="container-wrapper">
+                    <div class="project-title-description">
+                  <div class="project-left">
+                    <h3 class="project-title">Homepage & PLP Redesign<div class="company-name">Casper</div></h3>
+                  </div>
+                  <div class="project-right">
+                    <div class="project-button">
+                      
+                        
+                      <svg class="project-lock" width="10" height="13" viewBox="0 0 10 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M2.25 5H7.75V3.75C7.75 2.23122 6.51878 1 5 1C3.48122 1 2.25 2.23122 2.25 3.75V5ZM8.75 5C9.44036 5 10 5.55964 10 6.25V11.75C10 12.4404 9.44036 13 8.75 13H1.25C0.559644 13 0 12.4404 0 11.75V6.25C0 5.55964 0.559644 5 1.25 5V3.75C1.25 1.67893 2.92893 0 5 0C7.07107 0 8.75 1.67893 8.75 3.75V5Z"/>
+                        </svg>
+             
+                    </div>
+                    <div class="project-button-message-locked">(Password required)</div>
+                  </div>
+                </div>
+                <div class="project-description">
+                  <p>Led the redesign of Casper's Homepage and Product Listing Page for desktop and mobile.</p>
+                </div>
+                  <div class="projects-info-tags">
+                    <span class="tag">Web</span>
+                    <span class="tag">Redesign</span>
+                  </div>
+                </div>
+                </div>
+            
+                <div class="sticky-container second-container">
+                 <!-- <div class="project-image-wrapper">
+                  <img class="project-image" src="https://placehold.co/600x400">
+                 </div>
+                 <div class="project-image-wrapper">
+                  <img class="project-image" src="https://placehold.co/600x400">
+                 </div>
+                 <div class="project-image-wrapper">
+                  <img class="project-image" src="https://placehold.co/600x400">
+                 </div> -->
+
+                 <div class="project-image-wrapper-casper-4">
+                  <div class="hover-overlay-message">
+                    <a href="#your-link-here" class="hover-link">
+                      <span class="hover-item">View more</span>
+                      <span class="hover-item-active">View more ↗</span>
+                    </a>
+                    <a href="#" class="hover-arrow">
+                      <span class="arrow-item">↗</span>
+                      <span class="arrow-item">↗</span>
+                    </a>
+                  </div>  
+                  <div class="homepage-1-overlay-top"></div>
+                  <div class="homepage-1-overlay-bottom"></div>
+        
+                  <video class="project-video project-video-1" style="align-self: flex-end; max-width: 85%; border-radius: 0.3rem 0.3rem 0rem 0rem;" loop="true"  autoplay muted>
+                    <source src="./img/homepageredesign-desktop.mp4" type="video/mp4">
+                  </video>
+  
+                  <!-- <img class="project-image" src="https://placehold.co/600x400"> -->
+                 </div>
+                 <!-- <div class="project-image-wrapper-casper-2" style="align-self: flex-end;">
+                  <img class="project-image" style="max-width: 80%; border-radius: .5rem .5rem 0rem 0rem;" src="./img/1360-QuizResult-OriginalHybrid.jpg">
+                 </div> -->
+                 <div class="project-image-wrapper-casper-3" style="align-items: center; aspect-ratio: 1 / .95;">
+
+                  <div class="homepage-2-overlay-top"></div>
+                  <div class="homepage-2-overlay-bottom"></div>
+                  <video class="project-video project-video-2" style="max-width: 40%; border-radius: .5rem;" loop="true" autoplay muted>
+                   <source src="./img/homepageredesign-mobile.mp4" type="video/mp4">
+                 </video>
+                 </div>
+                 <div class="project-image-wrapper-homepage-3" style="align-items: center; aspect-ratio: 1 / .95;">
+                    <div class="homepage-3-overlay-top"></div>
+                    <div class="homepage-3-overlay-bottom"></div>
+                  <video class="project-video project-video-3" style="max-width: 40%; border-radius: .5rem;" loop="true" autoplay muted>
+                   <source src="./img/plpredesign-mobile.mp4" type="video/mp4">
+                 </video>
+                 </div>
+               
+                </div>
+              </div>
+
+
+              <div class="section">
+                <div class="sticky-container first-container">
+                  <!-- <h3 class="project-title">Reviews Feed<div class="company-name">Casper</div></h3>
+                  <div class="project-description">
+                    <p>Guiding customers from consideration to purchase at a critical mid-funnel touchpoint.</p>
+                  </div> -->
+                  <div class="container-wrapper">
+                    <div class="project-title-description">
+                  <div class="project-left">
+                    <h3 class="project-title">Checkout Redesign<div class="company-name">Casper</div></h3>
+                  </div>
+                  <div class="project-right">
+                    <div class="project-button">
+                      
+                        
+                      <svg class="project-lock" width="10" height="13" viewBox="0 0 10 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M2.25 5H7.75V3.75C7.75 2.23122 6.51878 1 5 1C3.48122 1 2.25 2.23122 2.25 3.75V5ZM8.75 5C9.44036 5 10 5.55964 10 6.25V11.75C10 12.4404 9.44036 13 8.75 13H1.25C0.559644 13 0 12.4404 0 11.75V6.25C0 5.55964 0.559644 5 1.25 5V3.75C1.25 1.67893 2.92893 0 5 0C7.07107 0 8.75 1.67893 8.75 3.75V5Z"/>
+                        </svg>
+             
+                    </div>
+                    <div class="project-button-message-locked">(Password required)</div>
+                  </div>
+                </div>
+                <div class="project-description">
+                  <p>Redesigned the full checkout experience, from mini cart to confirmation page, during our migration to Salesforce Commerce Cloud.</p>
+                   <!-- <p>Optimizing the end-to-end checkout flow during our migration to Salesforce Commerce Cloud.</p> -->
+                </div>
+                  <div class="projects-info-tags">
+                    <span class="tag">Web</span>
+                    <span class="tag">Redesign</span>
+                  </div>
+                </div>
+                </div>
+            
+                <div class="sticky-container second-container">
+                 <div class="project-mockup-container-first">
+                  <div class="hover-overlay-message">
+                    <a href="#your-link-here" class="hover-link">
+                      <span class="hover-item">View more</span>
+                      <span class="hover-item-active">View more ↗</span>
+                    </a>
+                    <a class="hover-arrow">
+                      <span class="arrow-item">↗</span>
+                      <span class="arrow-item">↗</span>
+                    </a>
+                  </div>  
+                  <div class="checkout-1-overlay-top"></div>
+                  <div class="checkout-1-overlay-bottom"></div>
+                  <img class="project-mockup checkout-image-1" style="max-width: 85%; border-radius: 0.3rem 0.3rem 0rem 0rem;" src="./img/1360-Mini-Cart.jpg">
+                </div>
+                <div class="project-mockup-container-second">
+                  <div class="checkout-2-overlay-top"></div>
+                  <div class="checkout-2-overlay-bottom"></div>
+                  <img class="project-mockup checkout-image-2" style="max-width: 85%; border-radius: 0.3rem 0.3rem 0rem 0rem;" src="./img/1360-ShippingandDelivery.jpg">
+                </div>
+                <div class="project-mockup-container-third">
+                  <div class="checkout-3-overlay-top"></div>
+                  <div class="checkout-3-overlay-bottom"></div>
+                  <img class="project-mockup project-mockup-hp-plp-3 checkout-image-3" style="max-width: 45%;" src="./img/375-Payment-with-bolt.jpg">
+                </div>
+               
+                </div>
+              </div>
+
+
+              <div class="section">
+                <div class="sticky-container first-container">
+                  <!-- <h3 class="project-title">Reviews Feed<div class="company-name">Casper</div></h3>
+                  <div class="project-description">
+                    <p>Guiding customers from consideration to purchase at a critical mid-funnel touchpoint.</p>
+                  </div> -->
+                  <div class="container-wrapper">
+                    <div class="project-title-description">
+                  <div class="project-left">
+                    <h3 class="project-title">Artist Quiz<div class="company-name">Spotify</div></h3>
+                  </div>
+                  <div class="project-right">
+                    <div class="project-button">
+                  
+                        
+                      <svg class="project-lock" width="10" height="13" viewBox="0 0 10 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M2.25 5H7.75V3.75C7.75 2.23122 6.51878 1 5 1C3.48122 1 2.25 2.23122 2.25 3.75V5ZM8.75 5C9.44036 5 10 5.55964 10 6.25V11.75C10 12.4404 9.44036 13 8.75 13H1.25C0.559644 13 0 12.4404 0 11.75V6.25C0 5.55964 0.559644 5 1.25 5V3.75C1.25 1.67893 2.92893 0 5 0C7.07107 0 8.75 1.67893 8.75 3.75V5Z"/>
+                        </svg>
+                  
+                    </div>
+                    <div class="project-button-message-locked">(Password required)</div>
+                  </div>
+                </div>
+                <div class="project-description">
+                  <!-- <p>Collaborated with regional Growth Marketing teams to create a 0->1 quiz experience, leveraging cultural moments and fandoms to drive conversion.</p> -->
+                  <p>Led the design of a 0->1 premium-gated microsite for Shakira fans, using a trivia quiz format with an upsell to drive subscriptions and engagement.</p>
+                </div>
+                  <div class="projects-info-tags">
+                    <span class="tag">Web</span>
+                    <span class="tag">Mobile-first</span>
+                    <span class="tag">0→1</span>
+                    <span class="tag">A/B Testing</span>
+                    <span class="tag">Development</span>
+                    <span class="tag">Data Analysis</span>
+                  </div>
+                </div>
+                </div>
+            
+                <div class="sticky-container second-container">
+                  <div class="project-image-wrapper project-image-wrapper-shakira-1" style="aspect-ratio: 1 / .95; align-items: center;">
+                    <img class="project-image shakira-image-1" style="width: 40%;" src="./img/shakira-iam.png">
+                   </div>
+                 <div class="project-image-wrapper project-image-wrapper-shakira-2" style="aspect-ratio: 1 / .95; align-items: center;">
+                  <div class="hover-overlay-message">
+                    <a href="#your-link-here" class="hover-link">
+                      <span class="hover-item">View more</span>
+                      <span class="hover-item-active">View more ↗</span>
+                    </a>
+                    <a class="hover-arrow">
+                      <span class="arrow-item">↗</span>
+                      <span class="arrow-item">↗</span>
+                    </a>
+                  </div>  
+                  <video class="project-video shakira-video-1" style="max-width: 40%; border-radius: 0.75rem; outline: 2.5px solid white; outline-offset: -2px;" loop="true" autoplay muted>
+                    <source src="./img/shakiraquiz.mp4" type="video/mp4">
+                  </video>
+                 </div>
+                 <!-- <div class="project-image-wrapper">
+                  <img class="project-image" style="width: 85%; border: 2px solid white;" src="./img/ShakiraTrivia-SEO.jpg">
+                 </div> -->
+                 <div class="project-image-wrapper project-image-wrapper-shakira-3">
+                  <img class="project-image shakira-image-2" style="width: 45%; border-radius: 0rem;" src="./img/shakiraquiz-scorecard.png">
+                 </div>
+               
+                </div>
+              </div>
+
+
+              <div class="section">
+                <div class="sticky-container first-container">
+                  <!-- <h3 class="project-title">Reviews Feed<div class="company-name">Casper</div></h3>
+                  <div class="project-description">
+                    <p>Guiding customers from consideration to purchase at a critical mid-funnel touchpoint.</p>
+                  </div> -->
+                  <div class="container-wrapper">
+                    <div class="project-title-description">
+                  <div class="project-left">
+                    <h3 class="project-title">Mattress Quiz<div class="company-name">Casper</div></h3>
+                  </div>
+                  <div class="project-right">
+                    <div class="project-button">
+                      <div class="project-button-arrow">
+                        <svg class="project-arrow" width="9" height="10" viewBox="0 0 9 10" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M8.7321 7.71535L7.1199 9.32756L7.04919 5.01421C7.03504 4.51923 7.07747 3.91112 7.09161 3.38786C6.51178 3.99597 6.22894 4.27882 5.9461 4.56166L1.50547 9.00229L0.374097 7.87092L4.81473 3.43029C5.09757 3.14744 5.36627 2.87874 5.98852 2.28477C5.46527 2.29892 4.81473 2.29892 4.30561 2.29892L0.0488281 2.25649L1.66103 0.644287L8.50583 0.870561L8.7321 7.71535Z"/>
+                          </svg>
+                      </div>
+                    </div>
+                  <div class="project-button-message">(See more)</div>
+                  </div>
+                </div>
+                <div class="project-description">
+                  <p>Led the design of a 6-step interactive quiz to help customers confidently find the perfect mattress for their sleep needs.</p>
+                </div>
+                  <div class="projects-info-tags">
+                    <span class="tag">Web</span>
+                    <span class="tag">0→1</span>
+                    <span class="tag">Growth</span>
+                  </div>
+                </div>
+                </div>
+            
+                <div class="sticky-container second-container">
+                 <div class="project-image-wrapper-casper">
+                  <div class="hover-overlay-message">
+                    <a href="#your-link-here" class="hover-link">
+                      <span class="hover-item">View more</span>
+                      <span class="hover-item-active">View more ↗</span>
+                    </a>
+                    <a class="hover-arrow">
+                      <span class="arrow-item">↗</span>
+                      <span class="arrow-item">↗</span>
+                    </a>
+                  </div>  
+                  <div class="quiz-overlay-1-top"></div>
+                  <div class="quiz-overlay-1-bottom"></div>
+                  <video class="project-video project-video-quiz-1" style="align-self: flex-end; max-width: 85%; border-radius: 0.3rem 0.3rem 0rem 0rem;" loop="true" autoplay muted>
+                    <source src="./img/Comp1_4.mp4" type="video/mp4">
+                  </video>
+  
+                  <!-- <img class="project-image" src="https://placehold.co/600x400"> -->
+                 </div>
+                 <!-- <div class="project-image-wrapper-casper-2" style="align-self: flex-end;">
+                  <img class="project-image" style="max-width: 80%; border-radius: .5rem .5rem 0rem 0rem;" src="./img/1360-QuizResult-OriginalHybrid.jpg">
+                 </div> -->
+                 <div class="project-image-wrapper-casper-3" style="align-items: center; aspect-ratio: 1 / .95;">
+                  <div class="quiz-overlay-2-top"></div>
+                  <div class="quiz-overlay-2-bottom"></div>
+                  <video class="project-video project-video-quiz-2" style="max-width: 40%; border-radius: .5rem;" loop="true" autoplay muted>
+                   <source src="./img/eat.mp4" type="video/mp4">
+                 </video>
+                 </div>
+                 <div class="project-image-wrapper project-image-wrapper-quiz-3">
+                  <div class="quiz-overlay-3-top"></div>
+                  <div class="quiz-overlay-3-bottom"></div>
+                  <img class="project-image project-image-quiz-3" style="max-width: 50%;" src="./img/MattressQuiz-illustrations.jpg">
+                 </div>
+               
+                </div>
+              </div>
+
+
+              <div class="section">
+                <div class="sticky-container first-container">
+                  <!-- <h3 class="project-title">Reviews Feed<div class="company-name">Casper</div></h3>
+                  <div class="project-description">
+                    <p>Guiding customers from consideration to purchase at a critical mid-funnel touchpoint.</p>
+                  </div> -->
+                  <div class="container-wrapper">
+                    <div class="project-title-description">
+                  <div class="project-left">
+                    <h3 class="project-title">Reviews Feed<div class="company-name">Casper</div></h3>
+                  </div>
+                  <div class="project-right">
+                    <div class="project-button">
+       
+                      <svg class="project-lock" width="10" height="13" viewBox="0 0 10 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M2.25 5H7.75V3.75C7.75 2.23122 6.51878 1 5 1C3.48122 1 2.25 2.23122 2.25 3.75V5ZM8.75 5C9.44036 5 10 5.55964 10 6.25V11.75C10 12.4404 9.44036 13 8.75 13H1.25C0.559644 13 0 12.4404 0 11.75V6.25C0 5.55964 0.559644 5 1.25 5V3.75C1.25 1.67893 2.92893 0 5 0C7.07107 0 8.75 1.67893 8.75 3.75V5Z"/>
+                        </svg>
+
+                    </div>
+                    <div class="project-button-message-locked">(Password required)</div>
+                  </div>
+                </div>
+                <div class="project-description">
+                  <p>Redesigned the PDP Reviews Feed to help customers more effectively find key information to support their purchase decisions.</p>
+                </div>
+                  <div class="projects-info-tags">
+                    <span class="tag">Web</span>
+                    <span class="tag">Redesign</span>
+                  </div>
+                </div>
+                </div>
+            
+                <div class="sticky-container second-container">
+                  <div class="reviews-1" id="reviewsfeed-first-container">
+                    <div class="hover-overlay-message">
+                      <a href="#your-link-here" class="hover-link">
+                        <span class="hover-item">View more</span>
+                        <span class="hover-item-active">View more ↗</span>
+                      </a>
+                      <a class="hover-arrow">
+                        <span class="arrow-item">↗</span>
+                        <span class="arrow-item">↗</span>
+                      </a>
+                    </div>  
+                    <div class="reviews-overlay-1-top"></div>
+                    <div class="reviews-overlay-1-bottom"></div>
+                    <img class="reviews-image-1 project-mockup" style="max-width: 85%; border-radius: 0.3rem 0.3rem 0rem 0rem;" src="./img/1360-reviewfeed.jpg">
+                  </div>
+                 <div class="reviews-2">
+                  <div class="reviews-overlay-2-top"></div>
+                  <div class="reviews-overlay-2-bottom"></div>
+                    <img class="reviews-image-2 project-mockup" style="max-width: 45%;" src="./img/375-reviewsfeed.jpg">
+                  </div>
+                 <div class="project-image-wrapper reviews-3">
+                  <img class="reviews-image-3 project-image" style="max-width: 45%;" src="./img/375-ratings-reviewsfeed.jpg">
+                 </div>
+               
+                </div>
+              </div>
+
+              <div class="section">
+                <div class="sticky-container first-container">
+                  <!-- <h3 class="project-title">Reviews Feed<div class="company-name">Casper</div></h3>
+                  <div class="project-description">
+                    <p>Guiding customers from consideration to purchase at a critical mid-funnel touchpoint.</p>
+                  </div> -->
+                  <div class="container-wrapper">
+                    <div class="project-title-description">
+                  <div class="project-left">
+                    <h3 class="project-title">Sticky Add-to-Cart<div class="company-name">Casper</div></h3>
+                  </div>
+                  <div class="project-right">
+                    <div class="project-button">
+                      <div class="project-button-arrow">
+                        <svg class="project-arrow" width="9" height="10" viewBox="0 0 9 10" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M8.7321 7.71535L7.1199 9.32756L7.04919 5.01421C7.03504 4.51923 7.07747 3.91112 7.09161 3.38786C6.51178 3.99597 6.22894 4.27882 5.9461 4.56166L1.50547 9.00229L0.374097 7.87092L4.81473 3.43029C5.09757 3.14744 5.36627 2.87874 5.98852 2.28477C5.46527 2.29892 4.81473 2.29892 4.30561 2.29892L0.0488281 2.25649L1.66103 0.644287L8.50583 0.870561L8.7321 7.71535Z"/>
+                          </svg>
+                      </div>
+                    </div>
+                    <div class="project-button-message">(See more)</div>
+                  </div>
+                </div>
+                <div class="project-description">
+                  <p>Reduced friction for customers to checkout during a critical end-of-funnel touchpoint on mobile PDP.</p>
+                </div>
+                  <div class="projects-info-tags">
+                    <span class="tag">Web</span>
+                    <span class="tag">Mobile-first</span>
+                    <span class="tag">Growth</span>
+                  </div>
+                </div>
+                </div>
+            
+                <div class="sticky-container second-container" style="margin-bottom:1rem">
+                  <div class="video-container">
+                    <div class="hover-overlay-message">
+                      <a href="#your-link-here" class="hover-link">
+                        <span class="hover-item">View more</span>
+                        <span class="hover-item-active">View more ↗</span>
+                      </a>
+                      <a class="hover-arrow">
+                        <span class="arrow-item">↗</span>
+                        <span class="arrow-item">↗</span>
+                      </a>
+                    </div>  
+                    <div class="sticky-overlay-1-top"></div>
+                    <div class="sticky-overlay-1-bottom"></div>
+                  <video class="sticky-video-1 project-video" style="width: 50%;" loop="true" autoplay muted>
+                    <source src="./img/again.mp4" type="video/mp4">
+                  </video>
+                  </div>
+
+                  <div class="project-floatingimage-wrapper sticky-container-1">
+                    <img class="sticky-sidebyside project-image" style="max-width: 80%;" src="./img/dropdowns.png">
+                   </div>
+               
+                </div>
+              </div>
+               
+
+              <div class="image-flash-slider">
+                <img class="hey flash-image" data-id="1" src="./img/tiffers.jpg" alt="Image 1-0">
+                <img class="hey flash-image" data-id="2" src="./img/bay-area.jpg" alt="Image 1-1">
+                <img class="hey flash-image" data-id="3" src="./img/tiffers.jpg" alt="Image 1-2">
+                <img class="hey flash-image" data-id="4" src="./img/bay-area.jpg" alt="Image 1-3">
+              </div>
     
     
-        <div class="project-one">
+        <!-- <div class="project-one">
           <div class="project-grid">
             <div class="project-left">
               <h3 class="project-title">Reviews Feed<div class="company-name">Casper</div></h3>
@@ -165,7 +678,7 @@
               <div class="arrow-hover">View</div>
             </div>
             <div class="project-image">
-              <img src="/img/test.png" alt="Project Image">
+              <img src="./img/test.png" alt="Project Image">
             </div> 
           </div>
         </div>
@@ -190,7 +703,7 @@
               <div class="arrow-hover">View</div>
             </div>
             <div class="project-image">
-              <img src="/img/test.png" alt="Project Image">
+              <img src="./img/test.png" alt="Project Image">
             </div> 
           </div>
         </div>
@@ -214,7 +727,7 @@
               <div class="arrow-hover">View</div>
             </div>
             <div class="project-image">
-              <img src="/img/test.png" alt="Project Image">
+              <img src="./img/test.png" alt="Project Image">
             </div> 
           </div>
         </div>
@@ -238,7 +751,7 @@
               <div class="arrow-hover">View</div>
             </div>
             <div class="project-image">
-              <img src="/img/test.png" alt="Project Image">
+              <img src="./img/test.png" alt="Project Image">
             </div> 
           </div>
         </div>
@@ -247,26 +760,31 @@
           <div class="project-wrapper"><div class="project-two"><div class="project-img-two"></div></div></div>
           <div class="project-wrapper"><div class="project-three"><div class="project-img-three"></div></div></div>
           <div class="project-wrapper"><div class="project-four"><div class="project-img-four"></div></div></div>
-        </div>
+     
+      -->
+     
+        <!-- </div> -->
         </div>
         </div> 
-          
-          
+        
+        
+        
+           
            <footer>
   
     
     
 
               <div class="container-1">
-                <div class="footer-header">Navigation</div>
-                <ul class="ul-spacer">
+                <div class="footer-header footer-header-1">Navigation</div>
+                <ul class="ul-spacer ul-spacer-1">
                   <li>
-                    <a href="#">
-                      <span class="menu-item">Work</span> <span class="menu-item-active">Work</span>
+                    <a class="footer-link footer-link-1" href="#projects-section">
+                      <span class="menu-item">Projects</span> <span class="menu-item-active">Projects</span>
                     </a> 
                   </li>
                 <li>
-                  <a href="#">
+                  <a class="footer-arrow-1">
                     <span class="arrow-item">↗</span>
                     <span class="arrow-item-active">↗</span>
                   </a>
@@ -275,12 +793,12 @@
                 
                 <ul>    
                       <li>
-                    <a href="#">
-                      <span class="menu-item">Info</span> <span class="menu-item-active">Info</span>
+                    <a class="footer-link footer-link-2" href="#about">
+                      <span class="menu-item">About</span> <span class="menu-item-active">About</span>
                     </a> 
                   </li>
                 <li>
-                  <a href="#">
+                  <a class="footer-arrow-2">
                     <span class="arrow-item">↗</span>
                     <span class="arrow-item-active">↗</span>
                   </a>
@@ -294,15 +812,15 @@
                 
                 
                 <div class="container-2">
-                <div class="footer-header">Get in touch</div>
+                <div class="footer-header footer-header-2">Get in touch</div>
                 <ul class="ul-spacer ul-first">
                   <li>
-                    <a href="#">
+                    <a class="footer-link footer-link-3" href="https://www.linkedin.com/in/tiffanymichellek/" target="_blank">
                       <span class="menu-item menu-item-padding">Linkedin</span> <span class="menu-item-active">Linkedin</span>
                     </a> 
                   </li>
                 <li>
-                  <a href="#">
+                  <a class="footer-arrow-3">
                     <span class="arrow-item">↗</span>
                     <span class="arrow-item-active">↗</span>
                   </a>
@@ -311,12 +829,12 @@
                 
                 <ul>    
                       <li>
-                    <a href="#">
+                    <a class="footer-link footer-link-4" href="https://drive.google.com/file/d/1jj2Cn7d0D89_DnoVTLxFkBtJFbM7E2q5/view?usp=sharing" target="_blank">
                       <span class="menu-item">Resume</span> <span class="menu-item-active">Resume</span>
                     </a> 
                   </li>
                 <li>
-                  <a href="#">
+                  <a class="footer-arrow-4">
                     <span class="arrow-item">↗</span>
                     <span class="arrow-item-active">↗</span>
                   </a>
@@ -340,8 +858,103 @@
             </div>
     
     
-            <div class="credits"><div class="credits-info">© 2024 TIFFANY KOVAL</div></div>
-          </footer> 
+            <div class="credits"><div class="credits-line"></div><div class="credits-info">© 2025 TIFFANY KOVAL</div></div>
+          </footer>  
+
+
+           
+          <!-- <footer>
+  
+    
+    
+<div class="container-wrapper">
+            <div class="container-1">
+              <div class="footer-header">Navigation</div>
+              <ul class="ul-spacer">
+                <li>
+                  <a href="#projects-section">
+                    <span class="menu-item">Projects</span> <span class="menu-item-active">Projects</span>
+                  </a> 
+                </li>
+              <li>
+                <a href="#projects-section">
+                  <span class="arrow-item">↗</span>
+                  <span class="arrow-item-active">↗</span>
+                </a>
+              </li>
+              </ul>
+              
+              <ul>    
+                    <li>
+                  <a href="#about">
+                    <span class="menu-item">About</span> <span class="menu-item-active">About</span>
+                  </a> 
+                </li>
+              <li>
+                <a href="#about">
+                  <span class="arrow-item">↗</span>
+                  <span class="arrow-item-active">↗</span>
+                </a>
+              </li>
+                  </ul>
+              
+            </div>
+              
+              
+              
+              
+              
+              <div class="container-2">
+              <div class="footer-header">Get in touch</div>
+              <ul class="ul-spacer ul-first">
+                <li>
+                  <a href="https://www.linkedin.com/in/tiffanymichellek/" target="_blank">
+                    <span class="menu-item menu-item-padding">Linkedin</span> <span class="menu-item-active">Linkedin</span>
+                  </a> 
+                </li>
+              <li>
+                <a href="https://www.linkedin.com/in/tiffanymichellek/" target="_blank">
+                  <span class="arrow-item">↗</span>
+                  <span class="arrow-item-active">↗</span>
+                </a>
+              </li>
+              </ul>
+              
+              <ul>    
+                    <li>
+                  <a href="#" target="_blank">
+                    <span class="menu-item">Resume</span> <span class="menu-item-active">Resume</span>
+                  </a> 
+                </li>
+              <li>
+                <a href="#" target="_blank">
+                  <span class="arrow-item">↗</span>
+                  <span class="arrow-item-active">↗</span>
+                </a>
+              </li>
+                  </ul>
+              
+            </div>
+              
+  
+          <div class="spotify-last-played">
+            <div id="songContainer">
+              <div class="song-album-cover"> 
+                <picture>  <img loading="lazy" id="songCover" alt="Album Cover" style="object-fit: cover; display: none;" width="50px" height="50px"/></div></picture>
+              
+                <div class="song-information">         
+                   <p><span class="songName" id="songName"></span></p>
+                  <p><span class="songArtist" id="songArtist"></span></p></div>
+            </div>
+           <div class="last-played"><div class="last-played-circle"><div class="last-played-outer-circle"></div><div class="last-played-inner-circle"></div></div><p>Last played on <span id="songPlayedAt"></span></p></div>
+          </div>
+  
+  
+          <div class="credits"><div class="credits-info">© 2025 TIFFANY KOVAL</div></div>
+        </div>
+
+
+        </footer>  -->
 
         </div>
           </div> 
@@ -349,6 +962,21 @@
 
       </div>
     </main>
+
+    <div class="background-texture"></div>
+
+    <div class="background-shapes">
+      <div class="shape1"></div>
+      <div class="shape2"></div>
+      <div class="shape3"></div>
+      <div class="shape4">
+       <svg width="143" height="142" viewBox="0 0 143 142" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0.859493 116.444C0.895463 130.2 12.038 141.342 25.794 141.378L117.135 141.617C139.502 141.676 150.684 114.581 134.785 98.8475L43.2082 8.22098C27.3995 -7.42371 0.564983 3.81482 0.623141 26.056L0.859493 116.444Z" fill="#F5F5F5"/>
+          </svg>
+      </div>
+      <div class="shape5"></div>
+    </div>
+<div class="overlay"></div>
         
 <div class="grid">
   <div class="line vertical-line line-left"></div>
@@ -388,7 +1016,22 @@
 };
 
       </script>
+      <!-- <script>
+        const images = document.querySelectorAll(".flash-image");
+        let currentIndex = 0;
+      
+        setInterval(() => {
+          // Hide all images
+          images.forEach((img, index) => {
+            img.style.opacity = index === currentIndex ? "1" : "0";
+          });
+      
+          // Move to the next image
+          currentIndex = (currentIndex + 1) % images.length;
+        }, 1000); // Change image every 2 seconds
+      </script> -->
 
+     
     </body>
 
 </html>
