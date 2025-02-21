@@ -1,4 +1,4 @@
-const sqlite3 = require('sqlite3').verbose();
+
 const express = require('express');
 const path = require('path');
 const browserSync = require('browser-sync');
@@ -40,9 +40,10 @@ app.get('/casper-mattress-quiz', (req, res) => {
 });
 
 // Spotify credentials
-const client_id = 'c5c925f6e0f548ec8179875d65d464c3'; // Replace with your actual Client ID
-const client_secret = '44503946562147229b23216f8f945e09'; // Replace with your actual Client Secret
-const redirect_uri = 'http://localhost:3002/callback'; // Ensure this matches your Spotify app redirect URI
+const client_id = process.env.SPOTIFY_CLIENT_ID;
+const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
+const redirect_uri = process.env.REDIRECT_URI || 'http://localhost:3002/callback';
+
 
 // Middleware
 app.use(cors());
