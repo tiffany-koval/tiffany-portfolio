@@ -1,16 +1,18 @@
-require('dotenv').config(); // Load environment variables from .env
-
+const sqlite3 = require('sqlite3').verbose();
 const express = require('express');
 const path = require('path');
-const cors = require('cors');
+const browserSync = require('browser-sync');
 const webpack = require('webpack');
 const webpackDevMiddleWare = require('webpack-dev-middleware');
 const webpackHotMiddleWare = require('webpack-hot-middleware');
-const browserSync = require('browser-sync');
-const webpackConfig = require('./webpack.config.js');
+const axios = require('axios');
+const querystring = require('querystring');
+const cors = require('cors');
 
+
+const webpackConfig = require('./webpack.config.js');
+const compiler = webpack(webpackConfig);
 const app = express();
-const isDevelopment = process.env.NODE_ENV !== 'production';
 
 // Middleware for webpack hot reloading
 app.use(
@@ -20,39 +22,27 @@ app.use(
 );
 app.use(webpackHotMiddleWare(compiler));
 
-
-// Serve static files
-app.use(express.static(path.join(__dirname, 'dist')));
-
-// Only use Webpack dev middleware in development mode
-if (isDevelopment) {
-    const compiler = webpack(webpackConfig);
-    app.use(
-        webpackDevMiddleWare(compiler, {
-            publicPath: webpackConfig.output.publicPath,
-        })
-    );
-    app.use(webpackHotMiddleWare(compiler));
-}
-
-// Serve index.html
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
-});
+// Serve static files from the "src" directory
+app.use(express.static(path.join(__dirname, 'src')));
 
 // Serve index.html on the root route
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'src', 'index.html'));
 });
 
+// Additional routes
+app.get('/about', (req, res) => {
+    res.sendFile(path.join(__dirname, 'src', 'about.html'));
+});
 
-const isProduction = process.env.NODE_ENV === 'production';
+app.get('/casper-mattress-quiz', (req, res) => {
+    res.sendFile(path.join(__dirname, 'src', 'casper-mattress-quiz.html'));
+});
 
-const client_id = process.env.SPOTIFY_CLIENT_ID;
-const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
-const redirect_uri = isProduction
-    ? 'https://node-practice-chi.vercel.app/callback'  // Production
-    : 'http://localhost:3002/callback';  
+// Spotify credentials
+const client_id = 'c5c925f6e0f548ec8179875d65d464c3'; // Replace with your actual Client ID
+const client_secret = '44503946562147229b23216f8f945e09'; // Replace with your actual Client Secret
+const redirect_uri = 'http://localhost:3002/callback'; // Ensure this matches your Spotify app redirect URI
 
 // Middleware
 app.use(cors());
@@ -145,17 +135,15 @@ function generateRandomString(length) {
     return result;
 }
 
-// Start server
-const PORT = process.env.PORT || 3001;
+// Start the Express server
+const PORT = 3001;
 app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-    if (isDevelopment) {
-        browserSync.init({
-            proxy: `http://localhost:${PORT}`,
-            files: ['src/**/*.*'],
-            port: 3002,
-            open: false,
-        });
-    }
+    console.log(`Server is running on http://localhost:${PORT}`);
+    browserSync.init({
+        proxy: `http://localhost:${PORT}`,
+        files: ['src/**/*.*'],
+        port: 3001,
+        open: false,
+    });
 });
 

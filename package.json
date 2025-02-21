@@ -2,12 +2,12 @@
   "name": "practice",
   "version": "1.0.0",
   "main": "server.js",
-"scripts": {
-  "dev": "nodemon server.js",
-  "start": "NODE_ENV=production node server.js",
-  "build": "webpack --mode production",
-  "vercel-build": "webpack --mode production"
-},
+  "scripts": {
+    "dev": "nodemon server.js",
+    "start": "NODE_ENV=production node server.js",
+    "build": "webpack --mode production",
+    "vercel-build": "webpack --mode production"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -15,6 +15,7 @@
   "dependencies": {
     "axios": "^1.7.9",
     "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
     "express-session": "^1.18.1",
     "lodash": "^4.17.21",
     "node-schedule": "^2.1.1",
@@ -29,6 +30,7 @@
     "express": "^4.21.2",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.6.3",
+    "mini-css-extract-plugin": "^2.9.2",
     "nodemon": "^3.1.7",
     "postcss-loader": "^8.1.1",
     "style-loader": "^4.0.0",
