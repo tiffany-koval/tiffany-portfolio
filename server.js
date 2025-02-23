@@ -1,52 +1,26 @@
-
+require('dotenv').config();
 const express = require('express');
 const path = require('path');
-const browserSync = require('browser-sync');
-const webpack = require('webpack');
-const webpackDevMiddleWare = require('webpack-dev-middleware');
-const webpackHotMiddleWare = require('webpack-hot-middleware');
 const axios = require('axios');
 const querystring = require('querystring');
 const cors = require('cors');
 
-
-const webpackConfig = require('./webpack.config.js');
-const compiler = webpack(webpackConfig);
 const app = express();
 
-// Middleware for webpack hot reloading
-app.use(
-    webpackDevMiddleWare(compiler, {
-        publicPath: webpackConfig.output.publicPath,
-    })
-);
-app.use(webpackHotMiddleWare(compiler));
+// Middleware
+app.use(cors());
+app.use(express.json()); // Ensure JSON parsing
 
-// Serve static files from the "src" directory
-app.use(express.static(path.join(__dirname, 'src')));
-
-// Serve index.html on the root route
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'src', 'index.html'));
-});
-
-// Additional routes
-app.get('/about', (req, res) => {
-    res.sendFile(path.join(__dirname, 'src', 'about.html'));
-});
-
-app.get('/casper-mattress-quiz', (req, res) => {
-    res.sendFile(path.join(__dirname, 'src', 'casper-mattress-quiz.html'));
-});
+// Serve static files
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Spotify credentials
 const client_id = process.env.SPOTIFY_CLIENT_ID;
 const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
-const redirect_uri = process.env.REDIRECT_URI || 'http://localhost:3002/callback';
-
-
-// Middleware
-app.use(cors());
+const redirect_uri =
+    process.env.NODE_ENV === 'production'
+        ? 'https://node-practice-chi.vercel.app/callback'
+        : 'http://localhost:3001/callback';
 
 // Spotify login route
 app.get('/login', (req, res) => {
@@ -69,8 +43,8 @@ app.get('/callback', async (req, res) => {
     const code = req.query.code || null;
     const state = req.query.state || null;
 
-    if (state === null) {
-        return res.status(400).send('State mismatch or missing state');
+    if (!state) {
+        return res.status(400).json({ error: 'State mismatch or missing state' });
     }
 
     try {
@@ -87,19 +61,22 @@ app.get('/callback', async (req, res) => {
         });
 
         const { access_token, refresh_token } = tokenResponse.data;
-        storedTokens = { access_token, refresh_token };
 
         const recentlyPlayedResponse = await axios.get('https://api.spotify.com/v1/me/player/recently-played?limit=1', {
             headers: { Authorization: `Bearer ${access_token}` },
         });
 
-        const track = recentlyPlayedResponse.data.items[0].track;
-        const played_at = recentlyPlayedResponse.data.items[0].played_at;
+        const track = recentlyPlayedResponse.data.items[0]?.track;
+        const played_at = recentlyPlayedResponse.data.items[0]?.played_at;
 
-        lastPlayedSong = {
+        if (!track) {
+            return res.status(404).json({ error: 'No recent tracks found' });
+        }
+
+        const lastPlayedSong = {
             song: track.name,
             artist: track.artists.map((a) => a.name).join(', '),
-            coverArt: track.album.images[0].url,
+            coverArt: track.album.images[0]?.url,
             playedAt: new Date(played_at).toLocaleString('en-US', {
                 timeZone: 'PST',
                 month: 'short',
@@ -110,17 +87,17 @@ app.get('/callback', async (req, res) => {
             }),
         };
 
-        res.send('Last played song fetched and saved successfully!');
+        res.json({ lastPlayedSong, access_token, refresh_token });
     } catch (error) {
-        console.error('Error fetching data from Spotify:', error);
-        res.status(500).send('Failed to fetch data from Spotify');
+        console.error('Error fetching data from Spotify:', error.response?.data || error.message);
+        res.status(500).json({ error: 'Failed to fetch data from Spotify' });
     }
 });
 
 // Endpoint to get the last played song
 app.get('/last-song', (req, res) => {
     if (!lastPlayedSong) {
-        return res.status(404).send('No song data available. Fetch the song first.');
+        return res.status(404).json({ error: 'No song data available. Fetch the song first.' });
     }
 
     res.json(lastPlayedSong);
@@ -136,15 +113,15 @@ function generateRandomString(length) {
     return result;
 }
 
-// Start the Express server
-const PORT = 3001;
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-    browserSync.init({
-        proxy: `http://localhost:${PORT}`,
-        files: ['src/**/*.*'],
-        port: 3001,
-        open: false,
+// Only start the server if running locally
+if (process.env.NODE_ENV !== 'production') {
+    const PORT = 3001;
+    app.listen(PORT, () => {
+        console.log(`Server is running on http://localhost:${PORT}`);
     });
-});
+}
+
+// Export for Vercel serverless functions
+module.exports = app;
+
 
