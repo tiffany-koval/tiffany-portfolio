@@ -1,26 +1,44 @@
-require('dotenv').config();
 const express = require('express');
 const path = require('path');
+const webpack = require('webpack');
+const webpackDevMiddleWare = require('webpack-dev-middleware');
+const webpackHotMiddleWare = require('webpack-hot-middleware');
 const axios = require('axios');
 const querystring = require('querystring');
 const cors = require('cors');
 
+env.config();
+
+const webpackConfig = require('./webpack.config.js');
+const compiler = webpack(webpackConfig);
 const app = express();
+const PORT = process.env.PORT || 3001;
+
+// Middleware for webpack hot reloading (development only)
+if (process.env.NODE_ENV === 'development') {
+    app.use(
+        webpackDevMiddleWare(compiler, {
+            publicPath: webpackConfig.output.publicPath,
+        })
+    );
+    app.use(webpackHotMiddleWare(compiler));
+}
+
+// Serve static files from "dist" for production
+app.use(express.static(path.join(__dirname, 'dist')));
+
+// Serve index.html on the root route
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+});
+
+// Spotify credentials (Use environment variables for security)
+const client_id = process.env.SPOTIFY_CLIENT_ID;
+const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
+const redirect_uri = process.env.SPOTIFY_REDIRECT_URI;
 
 // Middleware
 app.use(cors());
-app.use(express.json()); // Ensure JSON parsing
-
-// Serve static files
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Spotify credentials
-const client_id = process.env.SPOTIFY_CLIENT_ID;
-const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
-const redirect_uri =
-    process.env.NODE_ENV === 'production'
-        ? 'https://node-practice-chi.vercel.app/callback'
-        : 'http://localhost:3001/callback';
 
 // Spotify login route
 app.get('/login', (req, res) => {
@@ -44,7 +62,7 @@ app.get('/callback', async (req, res) => {
     const state = req.query.state || null;
 
     if (!state) {
-        return res.status(400).json({ error: 'State mismatch or missing state' });
+        return res.status(400).send('State mismatch or missing state');
     }
 
     try {
@@ -60,47 +78,11 @@ app.get('/callback', async (req, res) => {
             },
         });
 
-        const { access_token, refresh_token } = tokenResponse.data;
-
-        const recentlyPlayedResponse = await axios.get('https://api.spotify.com/v1/me/player/recently-played?limit=1', {
-            headers: { Authorization: `Bearer ${access_token}` },
-        });
-
-        const track = recentlyPlayedResponse.data.items[0]?.track;
-        const played_at = recentlyPlayedResponse.data.items[0]?.played_at;
-
-        if (!track) {
-            return res.status(404).json({ error: 'No recent tracks found' });
-        }
-
-        const lastPlayedSong = {
-            song: track.name,
-            artist: track.artists.map((a) => a.name).join(', '),
-            coverArt: track.album.images[0]?.url,
-            playedAt: new Date(played_at).toLocaleString('en-US', {
-                timeZone: 'PST',
-                month: 'short',
-                day: 'numeric',
-                hour: 'numeric',
-                minute: 'numeric',
-                timeZoneName: 'short',
-            }),
-        };
-
-        res.json({ lastPlayedSong, access_token, refresh_token });
+        res.json(tokenResponse.data);
     } catch (error) {
-        console.error('Error fetching data from Spotify:', error.response?.data || error.message);
-        res.status(500).json({ error: 'Failed to fetch data from Spotify' });
+        console.error('Error fetching data from Spotify:', error);
+        res.status(500).send('Failed to fetch data from Spotify');
     }
-});
-
-// Endpoint to get the last played song
-app.get('/last-song', (req, res) => {
-    if (!lastPlayedSong) {
-        return res.status(404).json({ error: 'No song data available. Fetch the song first.' });
-    }
-
-    res.json(lastPlayedSong);
 });
 
 // Helper function to generate random strings (for state)
@@ -113,15 +95,8 @@ function generateRandomString(length) {
     return result;
 }
 
-// Only start the server if running locally
-if (process.env.NODE_ENV !== 'production') {
-    const PORT = 3001;
-    app.listen(PORT, () => {
-        console.log(`Server is running on http://localhost:${PORT}`);
-    });
-}
-
-// Export for Vercel serverless functions
-module.exports = app;
-
+// Start the Express server
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
 
