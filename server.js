@@ -1,96 +1,71 @@
 const express = require('express');
+const app = express();
 const path = require('path');
-const webpack = require('webpack');
-const webpackDevMiddleWare = require('webpack-dev-middleware');
-const webpackHotMiddleWare = require('webpack-hot-middleware');
 const axios = require('axios');
 const querystring = require('querystring');
 const cors = require('cors');
+require('dotenv').config();
 
-env.config();
-
-const webpackConfig = require('./webpack.config.js');
-const compiler = webpack(webpackConfig);
-const app = express();
 const PORT = process.env.PORT || 3001;
-
-// Middleware for webpack hot reloading (development only)
-if (process.env.NODE_ENV === 'development') {
-    app.use(
-        webpackDevMiddleWare(compiler, {
-            publicPath: webpackConfig.output.publicPath,
-        })
-    );
-    app.use(webpackHotMiddleWare(compiler));
-}
-
-// Serve static files from "dist" for production
-app.use(express.static(path.join(__dirname, 'dist')));
-
-// Serve index.html on the root route
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
-});
-
-// Spotify credentials (Use environment variables for security)
-const client_id = process.env.SPOTIFY_CLIENT_ID;
-const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
-const redirect_uri = process.env.SPOTIFY_REDIRECT_URI;
-
-if (!process.env.SPOTIFY_CLIENT_ID || !process.env.SPOTIFY_CLIENT_SECRET || !process.env.SPOTIFY_REDIRECT_URI) {
-    throw new Error("Missing required environment variables. Please check your Vercel environment settings.");
-}
-
 
 // Middleware
 app.use(cors());
+app.use(express.static(path.join(__dirname, 'dist')));
+
+// Serve index.html
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+});
 
 // Spotify login route
 app.get('/login', (req, res) => {
     const scope = 'user-read-recently-played';
     const state = generateRandomString(16);
-
     const authURL = `https://accounts.spotify.com/authorize?${querystring.stringify({
         response_type: 'code',
-        client_id: client_id,
+        client_id: process.env.SPOTIFY_CLIENT_ID,
         scope: scope,
-        redirect_uri: redirect_uri,
+        redirect_uri: process.env.SPOTIFY_REDIRECT_URI,
         state: state,
     })}`;
-
     res.redirect(authURL);
 });
 
 // Spotify callback route
 app.get('/callback', async (req, res) => {
-    const code = req.query.code || null;
-    const state = req.query.state || null;
-
-    if (!state) {
-        return res.status(400).send('State mismatch or missing state');
-    }
-
     try {
-        const tokenResponse = await axios.post('https://accounts.spotify.com/api/token', null, {
+        const code = req.query.code;
+        if (!code) return res.status(400).send('Missing authorization code');
+
+        const response = await axios.post('https://accounts.spotify.com/api/token', querystring.stringify({
+            code: code,
+            redirect_uri: process.env.SPOTIFY_REDIRECT_URI,
+            grant_type: 'authorization_code'
+        }), {
             headers: {
-                Authorization: `Basic ${Buffer.from(client_id + ':' + client_secret).toString('base64')}`,
                 'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            params: {
-                code: code,
-                redirect_uri: redirect_uri,
-                grant_type: 'authorization_code',
-            },
+                'Authorization': `Basic ${Buffer.from(
+                    `${process.env.SPOTIFY_CLIENT_ID}:${process.env.SPOTIFY_CLIENT_SECRET}`
+                ).toString('base64')}`
+            }
         });
 
-        res.json(tokenResponse.data);
+        res.json(response.data);
     } catch (error) {
-        console.error('Error fetching data from Spotify:', error);
-        res.status(500).send('Failed to fetch data from Spotify');
+        console.error('Error getting Spotify token:', error);
+        res.status(500).send('Failed to fetch Spotify token');
     }
 });
 
-// Helper function to generate random strings (for state)
+// 404 handler
+app.use((req, res) => {
+    res.status(404).send('404: Not Found');
+});
+
+// Don't use app.listen() on Vercel. Instead, export the Express app.
+module.exports = app;
+
+// Helper function
 function generateRandomString(length) {
     let result = '';
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -99,9 +74,4 @@ function generateRandomString(length) {
     }
     return result;
 }
-
-// Start the Express server
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
 

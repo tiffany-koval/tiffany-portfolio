@@ -7,6 +7,7 @@ module.exports = {
         path: path.resolve(__dirname, 'dist'),
         publicPath: '/',
     },
+    mode: 'production',
     module: {
         rules: [
             {
@@ -22,10 +23,10 @@ module.exports = {
                 type: 'asset/resource',
             }
         ],
-    },
-    mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
-    devtool: process.env.NODE_ENV === 'production' ? 'source-map' : 'inline-source-map',
+    }
 };
+
+
 
 
 // const path = require('path');
