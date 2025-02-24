@@ -1,16 +1,19 @@
 const axios = require('axios');
 const querystring = require('querystring');
-const Cookies = require('cookies'); // For storing cookies on Vercel
+const Redis = require('ioredis');
 
 const client_id = process.env.SPOTIFY_CLIENT_ID;
 const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
 const redirect_uri = process.env.SPOTIFY_REDIRECT_URI;
 
+// Set up Redis connection
+const redis = new Redis(process.env.REDIS_URL); // Get the Redis URL from Upstash
+
 module.exports = async (req, res) => {
-    const cookies = new Cookies(req, res);
-    let access_token = cookies.get('access_token'); // Fetch from cookies
-    let refresh_token = cookies.get('refresh_token'); // Fetch refresh token
-    console.log('Access token from cookies:', access_token); // Debugging token
+    // Check Redis for stored access_token and refresh_token
+    let access_token = await redis.get('access_token');
+    let refresh_token = await redis.get('refresh_token');
+    console.log('Access token from Redis:', access_token); // Debugging token
 
     // If access token exists, fetch the last played song directly
     if (access_token) {
@@ -52,20 +55,9 @@ module.exports = async (req, res) => {
 
             const { access_token: newAccessToken, refresh_token: newRefreshToken } = tokenResponse.data;
 
-            // Set cookie based on protocol (secure cookies only for HTTPS)
-            const cookieOptions = {
-                httpOnly: true,
-                maxAge: 3600 * 1000, // 1 hour for access_token
-            };
-
-            if (req.protocol === 'https') {
-                // Set the secure cookie only if the request is over HTTPS
-                cookieOptions.secure = true;
-            }
-
-            // Save tokens to cookies (set expiration times as needed)
-            cookies.set('access_token', newAccessToken, cookieOptions);
-            cookies.set('refresh_token', newRefreshToken, { ...cookieOptions, maxAge: 7 * 24 * 3600 * 1000 }); // 7 days for refresh_token
+            // Store tokens in Redis
+            await redis.set('access_token', newAccessToken, 'EX', 3600); // Expires in 1 hour
+            await redis.set('refresh_token', newRefreshToken, 'EX', 7 * 24 * 3600); // Expires in 7 days
 
             return fetchLastPlayedSong(req, res, newAccessToken);
         } catch (error) {
@@ -139,6 +131,10 @@ async function refreshAccessToken(refresh_token) {
         });
 
         const newAccessToken = tokenResponse.data.access_token;
+
+        // Store the new access token in Redis and reset its expiration
+        await redis.set('access_token', newAccessToken, 'EX', 3600); // Expires in 1 hour
+
         return newAccessToken;
     } catch (error) {
         console.error('Error refreshing token:', error.response ? error.response.data : error.message);
@@ -155,6 +151,7 @@ function generateRandomString(length) {
     }
     return result;
 }
+
 
 
 
