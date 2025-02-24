@@ -3,7 +3,7 @@
   "builds": [
     {
       "src": "api/spotify.js",
-      "use": "@vercel/edge"
+      "use": "@vercel/node"  // Use default Node.js builder for Edge Functions
     },
     {
       "src": "public/**/*",
@@ -53,3 +53,5 @@
     }
   ]
 }
+
+
