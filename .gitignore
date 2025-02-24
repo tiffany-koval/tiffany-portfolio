@@ -133,3 +133,4 @@ out
 # Ignore environment variables
 .env
 
+.env*.local

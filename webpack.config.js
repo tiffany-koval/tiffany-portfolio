@@ -1,33 +1,31 @@
 const path = require('path');
 
 module.exports = {
-    entry: './src/index.js',
+    entry: './src/index.js', 
     output: {
-        filename: 'bundle.js',
-        path: path.resolve(__dirname, 'dist'),
-        publicPath: '/',
+     filename: 'bundle.js', 
+     path: path.resolve(__dirname, 'dist'), 
+     publicPath: '/',
     },
-    mode: 'production',
     module: {
         rules: [
             {
-                test: /\.css$/i,
-                use: ['style-loader', 'css-loader'],
-            },
+                test: /\.css$/i, 
+                use: ['style-loader', 'css-loader'], 
+            }, 
             {
-                test: /\.(png|svg|jpg|jpeg|gif)$/i,
-                type: 'asset/resource',
-            },
+                test: /\.(png|svg|jpg|jpeg|gif)$/i, 
+                type: 'asset/resource',  
+            }, 
             {
-                test: /\.(woff|woff2|eot|ttf|otf)$/i,
-                type: 'asset/resource',
+                test: /\.(woff|woff2|eot|ttf|otf)$/i, 
+                type: 'asset/resource', 
             }
-        ],
-    }
+        ], 
+    }, 
+    mode: 'development', 
+    devtool: 'inline-source-map',
 };
-
-
-
 
 // const path = require('path');
 // const webpack = require('webpack');
