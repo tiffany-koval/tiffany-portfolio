@@ -52,9 +52,20 @@ module.exports = async (req, res) => {
 
             const { access_token: newAccessToken, refresh_token: newRefreshToken } = tokenResponse.data;
 
+            // Set cookie based on protocol (secure cookies only for HTTPS)
+            const cookieOptions = {
+                httpOnly: true,
+                maxAge: 3600 * 1000, // 1 hour for access_token
+            };
+
+            if (req.protocol === 'https') {
+                // Set the secure cookie only if the request is over HTTPS
+                cookieOptions.secure = true;
+            }
+
             // Save tokens to cookies (set expiration times as needed)
-            cookies.set('access_token', newAccessToken, { httpOnly: true, secure: true, maxAge: 3600 * 1000 }); // 1 hour
-            cookies.set('refresh_token', newRefreshToken, { httpOnly: true, secure: true, maxAge: 7 * 24 * 3600 * 1000 }); // 7 days
+            cookies.set('access_token', newAccessToken, cookieOptions);
+            cookies.set('refresh_token', newRefreshToken, { ...cookieOptions, maxAge: 7 * 24 * 3600 * 1000 }); // 7 days for refresh_token
 
             return fetchLastPlayedSong(req, res, newAccessToken);
         } catch (error) {
