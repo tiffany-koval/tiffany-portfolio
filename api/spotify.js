@@ -1,22 +1,10 @@
 const axios = require('axios');
 const querystring = require('querystring');
 const Cookies = require('cookies'); // For storing cookies on Vercel
-import { createClient } from 'redis';
 
 const client_id = process.env.SPOTIFY_CLIENT_ID;
 const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
 const redirect_uri = process.env.SPOTIFY_REDIRECT_URI;
-
-// Set up Redis client
-const redisClient = createClient({
-  url: process.env.REDIS_URL,  // Your Redis connection string (e.g., from Upstash)
-  socket: {
-    tls: true,
-    rejectUnauthorized: false,
-  },
-});
-
-redisClient.connect().catch(console.error);  // Connect to Redis
 
 module.exports = async (req, res) => {
     const cookies = new Cookies(req, res);
@@ -26,7 +14,7 @@ module.exports = async (req, res) => {
 
     // If access token exists, fetch the last played song directly
     if (access_token) {
-        return fetchLastPlayedSong(req, res, access_token, refresh_token);
+        return fetchLastPlayedSong(req, res, access_token);
     }
 
     // If no access token, handle the login flow
@@ -71,14 +59,15 @@ module.exports = async (req, res) => {
             };
 
             if (req.protocol === 'https') {
-                cookieOptions.secure = true;  // Set the secure cookie only if the request is over HTTPS
+                // Set the secure cookie only if the request is over HTTPS
+                cookieOptions.secure = true;
             }
 
             // Save tokens to cookies (set expiration times as needed)
             cookies.set('access_token', newAccessToken, cookieOptions);
             cookies.set('refresh_token', newRefreshToken, { ...cookieOptions, maxAge: 7 * 24 * 3600 * 1000 }); // 7 days for refresh_token
 
-            return fetchLastPlayedSong(req, res, newAccessToken, newRefreshToken);
+            return fetchLastPlayedSong(req, res, newAccessToken);
         } catch (error) {
             console.error('Error fetching token from Spotify:', error.response ? error.response.data : error.message);
             return res.status(500).json({ error: 'Failed to fetch data from Spotify', details: error.response ? error.response.data : error.message });
@@ -88,18 +77,9 @@ module.exports = async (req, res) => {
     return res.status(400).json({ error: 'Invalid request' });
 };
 
-// Fetch the last played song with Redis caching
-async function fetchLastPlayedSong(req, res, token, refresh_token) {
+// Fetch the last played song
+async function fetchLastPlayedSong(req, res, token) {
     try {
-        // Check if last played song is in cache
-        const cachedSong = await redisClient.get('lastPlayedSong');
-        
-        if (cachedSong) {
-            console.log('Cache hit');
-            return res.json(JSON.parse(cachedSong));  // Return cached data
-        }
-
-        // Cache miss, make a request to Spotify API
         const recentlyPlayedResponse = await axios.get('https://api.spotify.com/v1/me/player/recently-played?limit=1', {
             headers: { Authorization: `Bearer ${token}` },
         });
@@ -120,9 +100,6 @@ async function fetchLastPlayedSong(req, res, token, refresh_token) {
                 timeZoneName: 'short',
             }),
         };
-
-        // Cache the result in Redis for future requests (set an expiration time of 5 minutes)
-        await redisClient.set('lastPlayedSong', JSON.stringify(lastPlayedSong), { EX: 300 });
 
         return res.json(lastPlayedSong);
     } catch (error) {
@@ -178,7 +155,6 @@ function generateRandomString(length) {
     }
     return result;
 }
-
 
 
 
