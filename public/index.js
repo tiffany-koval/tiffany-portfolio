@@ -3091,8 +3091,8 @@ function addLogos() {
 
 // Intersection Observer to detect when .image--2 img enters viewport
 function setupIntersectionObserver() {
-  const imageContainer = document.querySelector(".image--2 img");
-  if (!imageContainer) {
+  const container = document.querySelector(".companylogos-container");
+  if (!container) {
     console.error("Image container not found!");
     return;
   }
@@ -3104,9 +3104,9 @@ function setupIntersectionObserver() {
         observer.disconnect(); // Stop observing after triggering
       }
     });
-  }, { threshold: 0.5 }); // Trigger when 50% of the image is visible
+  }, { threshold: 0.1 }); // Trigger when 50% of the image is visible
 
-  observer.observe(imageContainer); // Start observing the target element
+  observer.observe(container); // Start observing the target element
 }
 
 // Play random audio on click
