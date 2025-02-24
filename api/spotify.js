@@ -17,14 +17,18 @@ const redisClient = createClient({
   },
 });
 
-// Attempt to connect to Redis, with error logging
-await redisClient.connect()
-  .then(() => {
+// Wrap the Redis connection in an async function
+async function connectRedis() {
+  try {
+    await redisClient.connect();
     console.log('Redis connected successfully');
-  })
-  .catch((err) => {
+  } catch (err) {
     console.error('Error connecting to Redis:', err);
-  });
+  }
+}
+
+// Attempt to connect to Redis
+connectRedis();
 
 // Optionally, handle Redis connection errors on runtime
 redisClient.on('error', (err) => {
@@ -191,6 +195,7 @@ function generateRandomString(length) {
   }
   return result;
 }
+
 
 
 
