@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "scripts": {
     "build": "vercel build",
-    "deploy": "vercel --prod"
+    "deploy": "vercel --prod",
+    "postinstall": "npm ci"
   },
   "keywords": [],
   "author": "",
