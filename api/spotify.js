@@ -1,24 +1,23 @@
 const axios = require('axios');
 const querystring = require('querystring');
+const Cookies = require('cookies'); // For storing cookies on Vercel
 
-const client_id = process.env.SPOTIFY_CLIENT_ID; // Store in Vercel Environment Variables
+const client_id = process.env.SPOTIFY_CLIENT_ID;
 const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
-const redirect_uri = process.env.SPOTIFY_REDIRECT_URI; // Update to Vercel's domain
-
-let lastPlayedSong = null;
-let access_token = null;  // Store access token
-let refresh_token = null; // Store refresh token
+const redirect_uri = process.env.SPOTIFY_REDIRECT_URI;
 
 module.exports = async (req, res) => {
-    const { action, code, state } = req.query;
+    const cookies = new Cookies(req, res);
+    let access_token = cookies.get('access_token'); // Fetch from cookies
+    let refresh_token = cookies.get('refresh_token'); // Fetch refresh token
 
-    // If access token exists, skip the login process
+    // If access token exists, fetch last played song directly
     if (access_token) {
         return fetchLastPlayedSong(req, res, access_token);
     }
 
-    // Login action to Spotify
-    if (action === 'login') {
+    // If no access token, handle the login flow
+    if (req.query.action === 'login') {
         const scope = 'user-read-recently-played';
         const authURL = `https://accounts.spotify.com/authorize?${querystring.stringify({
             response_type: 'code',
@@ -30,8 +29,9 @@ module.exports = async (req, res) => {
         return res.redirect(authURL);
     }
 
-    // Handle Spotify callback (after user logs in)
+    // Callback from Spotify after login
     if (req.url.startsWith('/api/callback')) {
+        const { code, state } = req.query;
         if (!code || !state) {
             return res.status(400).json({ error: 'State mismatch or missing parameters' });
         }
@@ -51,28 +51,21 @@ module.exports = async (req, res) => {
 
             const { access_token: newAccessToken, refresh_token: newRefreshToken } = tokenResponse.data;
 
-            // Save the tokens (could be saved in session/database for persistence)
-            access_token = newAccessToken;
-            refresh_token = newRefreshToken;
+            // Save tokens to cookies (set expiration times as needed)
+            cookies.set('access_token', newAccessToken, { httpOnly: true, maxAge: 3600 * 1000 }); // 1 hour
+            cookies.set('refresh_token', newRefreshToken, { httpOnly: true, maxAge: 7 * 24 * 3600 * 1000 }); // 7 days
 
-            return fetchLastPlayedSong(req, res, access_token);
+            return fetchLastPlayedSong(req, res, newAccessToken);
         } catch (error) {
             console.error('Error fetching data from Spotify:', error);
             return res.status(500).json({ error: 'Failed to fetch data from Spotify' });
         }
     }
 
-    // Fetch the last played song
-    if (req.url.startsWith('/api/last-song')) {
-        if (!lastPlayedSong) {
-            return res.status(404).json({ error: 'No song data available. Fetch the song first.' });
-        }
-        return res.json(lastPlayedSong);
-    }
-
     return res.status(400).json({ error: 'Invalid request' });
 };
 
+// Fetch the last played song
 async function fetchLastPlayedSong(req, res, token) {
     try {
         const recentlyPlayedResponse = await axios.get('https://api.spotify.com/v1/me/player/recently-played?limit=1', {
@@ -82,7 +75,7 @@ async function fetchLastPlayedSong(req, res, token) {
         const track = recentlyPlayedResponse.data.items[0].track;
         const played_at = recentlyPlayedResponse.data.items[0].played_at;
 
-        lastPlayedSong = {
+        const lastPlayedSong = {
             song: track.name,
             artist: track.artists.map((a) => a.name).join(', '),
             coverArt: track.album.images[0].url,
@@ -96,13 +89,13 @@ async function fetchLastPlayedSong(req, res, token) {
             }),
         };
 
-        return res.json({ message: 'Last played song fetched successfully!' });
+        return res.json(lastPlayedSong);
     } catch (error) {
         console.error('Error fetching last played song:', error);
 
-        // If the access token expires, refresh it
+        // If the access token has expired, refresh it using the refresh token
         if (error.response && error.response.status === 401) {
-            await refreshAccessToken();
+            await refreshAccessToken(refresh_token);
             return fetchLastPlayedSong(req, res, access_token);
         }
 
@@ -110,12 +103,8 @@ async function fetchLastPlayedSong(req, res, token) {
     }
 }
 
-// Refresh access token using the refresh token
-async function refreshAccessToken() {
-    if (!refresh_token) {
-        throw new Error('No refresh token available');
-    }
-
+// Refresh the access token using the refresh token
+async function refreshAccessToken(refresh_token) {
     const tokenResponse = await axios.post('https://accounts.spotify.com/api/token', null, {
         headers: {
             Authorization: `Basic ${Buffer.from(client_id + ':' + client_secret).toString('base64')}`,
@@ -127,10 +116,11 @@ async function refreshAccessToken() {
         },
     });
 
-    access_token = tokenResponse.data.access_token;
+    const newAccessToken = tokenResponse.data.access_token;
+    return newAccessToken;
 }
 
-// Helper function to generate random strings (for state)
+// Helper function to generate random strings for state
 function generateRandomString(length) {
     let result = '';
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -139,3 +129,4 @@ function generateRandomString(length) {
     }
     return result;
 }
+

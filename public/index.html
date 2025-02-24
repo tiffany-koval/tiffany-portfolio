@@ -992,30 +992,32 @@
         <script src="index.js"></script>
         <script>
           window.onload = async function () {
-            try {
-              const response = await fetch('/api/last-song');
-              const data = await response.json();
-        
-              if (data.song) {
-                document.getElementById('songName').innerText = data.song;
-                document.getElementById('songArtist').innerText = data.artist;
-                document.getElementById('songPlayedAt').innerText = data.playedAt;
-        
-                const img = document.getElementById('songCover');
-                const tempImg = new Image();
-                tempImg.onload = () => {
-                  img.src = tempImg.src;
-                  img.style.display = 'block';
-                };
-                tempImg.src = data.coverArt;
-              } else {
-                console.warn('No song data available');
+              try {
+                  const response = await fetch('/api/last-song');
+                  const data = await response.json();
+          
+                  if (data.song) {
+                      document.getElementById('songName').innerText = data.song;
+                      document.getElementById('songArtist').innerText = data.artist;
+                      document.getElementById('songPlayedAt').innerText = data.playedAt;
+          
+                      const img = document.getElementById('songCover');
+                      const tempImg = new Image();
+                      tempImg.onload = () => {
+                          img.src = tempImg.src;
+                          img.style.display = 'block';
+                      };
+                      tempImg.src = data.coverArt;
+                  } else {
+                      console.warn('No song data available');
+                  }
+              } catch (error) {
+                  console.error('Error fetching last played song:', error);
               }
-            } catch (error) {
-              console.error('Error fetching last played song:', error);
-            }
           };
-        </script>
+      </script>
+      
+      
         
       <!-- <script>
         const images = document.querySelectorAll(".flash-image");
