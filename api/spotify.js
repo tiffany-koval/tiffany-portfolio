@@ -14,14 +14,17 @@ module.exports = async (req, res) => {
     let access_token = await redis.get('access_token');
     let refresh_token = await redis.get('refresh_token');
     console.log('Access token from Redis:', access_token); // Debugging token
+    console.log('Refresh token from Redis:', refresh_token); // Debugging refresh token
 
     // If access token exists, fetch the last played song directly
     if (access_token) {
+        console.log('Access token found, fetching last played song...');
         return fetchLastPlayedSong(req, res, access_token);
     }
 
     // If no access token, handle the login flow
     if (req.query.action === 'login') {
+        console.log('No access token found, redirecting to Spotify login...');
         const scope = 'user-read-recently-played';
         const authURL = `https://accounts.spotify.com/authorize?${querystring.stringify({
             response_type: 'code',
@@ -41,6 +44,7 @@ module.exports = async (req, res) => {
         }
 
         try {
+            console.log('Exchanging code for token...');
             const tokenResponse = await axios.post('https://accounts.spotify.com/api/token', null, {
                 headers: {
                     Authorization: `Basic ${Buffer.from(client_id + ':' + client_secret).toString('base64')}`,
@@ -51,11 +55,13 @@ module.exports = async (req, res) => {
                     redirect_uri,
                     grant_type: 'authorization_code',
                 },
+                timeout: 5000, // 5 seconds timeout for token exchange
             });
 
             const { access_token: newAccessToken, refresh_token: newRefreshToken } = tokenResponse.data;
 
             // Store tokens in Redis
+            console.log('Storing tokens in Redis...');
             await redis.set('access_token', newAccessToken, 'EX', 3600); // Expires in 1 hour
             await redis.set('refresh_token', newRefreshToken, 'EX', 7 * 24 * 3600); // Expires in 7 days
 
@@ -72,8 +78,10 @@ module.exports = async (req, res) => {
 // Fetch the last played song
 async function fetchLastPlayedSong(req, res, token) {
     try {
+        console.log('Fetching last played song...');
         const recentlyPlayedResponse = await axios.get('https://api.spotify.com/v1/me/player/recently-played?limit=1', {
             headers: { Authorization: `Bearer ${token}` },
+            timeout: 5000, // 5 seconds timeout for API request
         });
 
         const track = recentlyPlayedResponse.data.items[0].track;
@@ -99,6 +107,7 @@ async function fetchLastPlayedSong(req, res, token) {
 
         // If the access token has expired, refresh it using the refresh token
         if (error.response && error.response.status === 401) {
+            console.log('Access token expired, refreshing...');
             const newAccessToken = await refreshAccessToken(refresh_token);
             if (!newAccessToken) {
                 return res.status(401).json({ error: 'Unable to refresh access token' });
@@ -119,6 +128,7 @@ async function refreshAccessToken(refresh_token) {
     }
 
     try {
+        console.log('Refreshing access token...');
         const tokenResponse = await axios.post('https://accounts.spotify.com/api/token', null, {
             headers: {
                 Authorization: `Basic ${Buffer.from(client_id + ':' + client_secret).toString('base64')}`,
@@ -128,11 +138,13 @@ async function refreshAccessToken(refresh_token) {
                 grant_type: 'refresh_token',
                 refresh_token,
             },
+            timeout: 5000, // 5 seconds timeout for token refresh
         });
 
         const newAccessToken = tokenResponse.data.access_token;
 
         // Store the new access token in Redis and reset its expiration
+        console.log('Storing refreshed token in Redis...');
         await redis.set('access_token', newAccessToken, 'EX', 3600); // Expires in 1 hour
 
         return newAccessToken;
@@ -151,6 +163,7 @@ function generateRandomString(length) {
     }
     return result;
 }
+
 
 
 
