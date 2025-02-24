@@ -11,7 +11,7 @@ module.exports = async (req, res) => {
     let access_token = cookies.get('access_token'); // Fetch from cookies
     let refresh_token = cookies.get('refresh_token'); // Fetch refresh token
 
-    // If access token exists, fetch last played song directly
+    // If access token exists, fetch the last played song directly
     if (access_token) {
         return fetchLastPlayedSong(req, res, access_token);
     }
@@ -52,8 +52,8 @@ module.exports = async (req, res) => {
             const { access_token: newAccessToken, refresh_token: newRefreshToken } = tokenResponse.data;
 
             // Save tokens to cookies (set expiration times as needed)
-            cookies.set('access_token', newAccessToken, { httpOnly: true, maxAge: 3600 * 1000 }); // 1 hour
-            cookies.set('refresh_token', newRefreshToken, { httpOnly: true, maxAge: 7 * 24 * 3600 * 1000 }); // 7 days
+            cookies.set('access_token', newAccessToken, { httpOnly: true, secure: true, maxAge: 3600 * 1000 }); // 1 hour
+            cookies.set('refresh_token', newRefreshToken, { httpOnly: true, secure: true, maxAge: 7 * 24 * 3600 * 1000 }); // 7 days
 
             return fetchLastPlayedSong(req, res, newAccessToken);
         } catch (error) {
@@ -95,8 +95,12 @@ async function fetchLastPlayedSong(req, res, token) {
 
         // If the access token has expired, refresh it using the refresh token
         if (error.response && error.response.status === 401) {
-            await refreshAccessToken(refresh_token);
-            return fetchLastPlayedSong(req, res, access_token);
+            const newAccessToken = await refreshAccessToken(refresh_token);
+            if (!newAccessToken) {
+                return res.status(401).json({ error: 'Unable to refresh access token' });
+            }
+            // After refreshing the token, fetch the last played song again
+            return fetchLastPlayedSong(req, res, newAccessToken);
         }
 
         return res.status(500).json({ error: 'Failed to fetch data from Spotify' });
@@ -105,19 +109,29 @@ async function fetchLastPlayedSong(req, res, token) {
 
 // Refresh the access token using the refresh token
 async function refreshAccessToken(refresh_token) {
-    const tokenResponse = await axios.post('https://accounts.spotify.com/api/token', null, {
-        headers: {
-            Authorization: `Basic ${Buffer.from(client_id + ':' + client_secret).toString('base64')}`,
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        params: {
-            grant_type: 'refresh_token',
-            refresh_token,
-        },
-    });
+    if (!refresh_token) {
+        console.error('No refresh token available');
+        return null;
+    }
 
-    const newAccessToken = tokenResponse.data.access_token;
-    return newAccessToken;
+    try {
+        const tokenResponse = await axios.post('https://accounts.spotify.com/api/token', null, {
+            headers: {
+                Authorization: `Basic ${Buffer.from(client_id + ':' + client_secret).toString('base64')}`,
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            params: {
+                grant_type: 'refresh_token',
+                refresh_token,
+            },
+        });
+
+        const newAccessToken = tokenResponse.data.access_token;
+        return newAccessToken;
+    } catch (error) {
+        console.error('Error refreshing token:', error);
+        return null;
+    }
 }
 
 // Helper function to generate random strings for state
