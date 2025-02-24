@@ -79,7 +79,6 @@ async function getLastPlayedSong(req, res) {
     }
 }
 
-// **4. Cron Job: Fetch & Store Last Played Song**
 async function updateLastPlayedSong(req, res) {
     const token = await refreshAccessToken();
     if (!token) {
