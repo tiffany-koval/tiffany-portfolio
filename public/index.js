@@ -3022,7 +3022,7 @@ const logos = [
   }, 
   {
     id: "portfolio-logo", 
-    svg: `<svg width="80" height="80" viewBox="0 0 250 250" xmlns="http://www.w3.org/2000/svg"> <path fill-rule="evenodd" clip-rule="evenodd" d="M27.5 55C42.6878 55 55 42.6878 55 27.5C55 12.3122 42.6878 0 27.5 0C12.3122 0 0 12.3122 0 27.5C0 42.6878 12.3122 55 27.5 55ZM27.4901 31.3372L32.2773 38.4476L35.5158 36.1948L30.7285 29.4364L37.9797 27.1836L36.783 23.382L29.3909 25.9868V17.8204H25.5189V25.9868L18.2677 23.4524L17.0709 27.1836L24.1813 29.4364L19.4645 36.1244L22.7029 38.3772L27.4901 31.3372Z" fill="#0F0F0F"/></svg>`
+    svg: `<svg width="55" height="55" viewBox="0 0 55 55" xmlns="http://www.w3.org/2000/svg"> <path fill-rule="evenodd" clip-rule="evenodd" d="M27.5 55C42.6878 55 55 42.6878 55 27.5C55 12.3122 42.6878 0 27.5 0C12.3122 0 0 12.3122 0 27.5C0 42.6878 12.3122 55 27.5 55ZM27.4901 31.3372L32.2773 38.4476L35.5158 36.1948L30.7285 29.4364L37.9797 27.1836L36.783 23.382L29.3909 25.9868V17.8204H25.5189V25.9868L18.2677 23.4524L17.0709 27.1836L24.1813 29.4364L19.4645 36.1244L22.7029 38.3772L27.4901 31.3372Z" fill="#0F0F0F"/></svg>`
   }
 ];
 
@@ -3069,13 +3069,13 @@ function addLogos() {
       wrapper.style.left = `${finalX}px`;
       wrapper.style.top = `${initialY}px`; 
       wrapper.style.opacity = "0";
-      wrapper.style.transition = "top 0.8s ease-out, opacity 0.5s"; 
+      wrapper.style.transition = "top 0.8s cubic-bezier(.4,0,.2,1), opacity 0.5s"; 
   
       // Click effect: Pop and disappear
       wrapper.addEventListener("click", function () {
         wrapper.style.transform = "scale(1.25)";
         playRandomAudio(); // Play random audio on click
-        setTimeout(() => wrapper.remove(), 300); // Remove the logo after animation
+        setTimeout(() => wrapper.remove(), 100); // Remove the logo after animation
       });
   
       container.appendChild(wrapper);
