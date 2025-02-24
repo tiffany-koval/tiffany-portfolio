@@ -136,7 +136,7 @@ sup {
 
 @media (min-width: 768px) {
   .companylogos-container {
-    margin-right: 1rem;
+    margin-right: 1rem !important;
   }
   .project-image-wrapper-1::before, .project-image-wrapper-casper-4::before, .sticky-container-2::before, .sticky-container-3::before, .project-mockup-container-first::before, .project-image-wrapper-shakira-2::before,  .project-image-wrapper-casper::before, .reviews-1::before, .video-container::before  {
     content: '';
