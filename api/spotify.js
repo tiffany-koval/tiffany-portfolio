@@ -1,46 +1,24 @@
 const axios = require('axios');
 const querystring = require('querystring');
-const Redis = require('ioredis');
+const Cookies = require('cookies'); // For storing cookies on Vercel
 
 const client_id = process.env.SPOTIFY_CLIENT_ID;
 const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
 const redirect_uri = process.env.SPOTIFY_REDIRECT_URI;
-const redis_url = process.env.REDIS_URL;
-const redis_password = process.env.REDIS_PASSWORD; // In case authentication is needed
-
-// Enhanced Redis Connection with Debugging
-const redis = new Redis(redis_url, {
-    password: redis_password || undefined,
-    connectTimeout: 10000, // 10 seconds timeout for Redis connection
-    maxRetriesPerRequest: 5, // Retry up to 5 times before failing
-    retryStrategy: (times) => Math.min(times * 1000, 5000), // Exponential backoff up to 5 seconds
-});
-
-// Debug Redis Connection
-redis.on('connect', () => console.log('✅ Redis connected successfully'));
-redis.on('error', (err) => console.error('❌ Redis connection error:', err.message));
 
 module.exports = async (req, res) => {
-    console.log('🔹 Incoming request:', req.method, req.url);
-    
-    let access_token, refresh_token;
-    try {
-        console.log('🟡 Checking Redis for tokens...');
-        access_token = await redis.get('access_token');
-        refresh_token = await redis.get('refresh_token');
-        console.log('🔹 Access Token:', access_token ? 'Exists ✅' : 'Not Found ❌');
-        console.log('🔹 Refresh Token:', refresh_token ? 'Exists ✅' : 'Not Found ❌');
-    } catch (error) {
-        console.error('❌ Redis Fetch Error:', error.message);
-        return res.status(500).json({ error: 'Redis connection error' });
-    }
+    const cookies = new Cookies(req, res);
+    let access_token = cookies.get('access_token'); // Fetch from cookies
+    let refresh_token = cookies.get('refresh_token'); // Fetch refresh token
+    console.log('Access token from cookies:', access_token); // Debugging token
 
+    // If access token exists, fetch the last played song directly
     if (access_token) {
         return fetchLastPlayedSong(req, res, access_token);
     }
 
+    // If no access token, handle the login flow
     if (req.query.action === 'login') {
-        console.log('🔹 Redirecting to Spotify login...');
         const scope = 'user-read-recently-played';
         const authURL = `https://accounts.spotify.com/authorize?${querystring.stringify({
             response_type: 'code',
@@ -52,6 +30,7 @@ module.exports = async (req, res) => {
         return res.redirect(authURL);
     }
 
+    // Callback from Spotify after login
     if (req.url.startsWith('/api/callback')) {
         const { code, state } = req.query;
         if (!code || !state) {
@@ -59,48 +38,56 @@ module.exports = async (req, res) => {
         }
 
         try {
-            console.log('🔹 Exchanging code for token...');
             const tokenResponse = await axios.post('https://accounts.spotify.com/api/token', null, {
                 headers: {
                     Authorization: `Basic ${Buffer.from(client_id + ':' + client_secret).toString('base64')}`,
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                params: { code, redirect_uri, grant_type: 'authorization_code' },
-                timeout: 10000, // 10 seconds timeout for token exchange
+                params: {
+                    code,
+                    redirect_uri,
+                    grant_type: 'authorization_code',
+                },
             });
 
             const { access_token: newAccessToken, refresh_token: newRefreshToken } = tokenResponse.data;
 
-            console.log('✅ Storing tokens in Redis...');
-            await redis.set('access_token', newAccessToken, 'EX', 3600); // Expires in 1 hour
-            await redis.set('refresh_token', newRefreshToken, 'EX', 7 * 24 * 3600); // Expires in 7 days
+            // Set cookie based on protocol (secure cookies only for HTTPS)
+            const cookieOptions = {
+                httpOnly: true,
+                maxAge: 3600 * 1000, // 1 hour for access_token
+            };
+
+            if (req.protocol === 'https') {
+                // Set the secure cookie only if the request is over HTTPS
+                cookieOptions.secure = true;
+            }
+
+            // Save tokens to cookies (set expiration times as needed)
+            cookies.set('access_token', newAccessToken, cookieOptions);
+            cookies.set('refresh_token', newRefreshToken, { ...cookieOptions, maxAge: 7 * 24 * 3600 * 1000 }); // 7 days for refresh_token
 
             return fetchLastPlayedSong(req, res, newAccessToken);
         } catch (error) {
-            console.error('❌ Spotify Token Fetch Error:', error.response ? error.response.data : error.message);
-            return res.status(500).json({ error: 'Failed to fetch data from Spotify' });
+            console.error('Error fetching token from Spotify:', error.response ? error.response.data : error.message);
+            return res.status(500).json({ error: 'Failed to fetch data from Spotify', details: error.response ? error.response.data : error.message });
         }
     }
 
     return res.status(400).json({ error: 'Invalid request' });
 };
 
+// Fetch the last played song
 async function fetchLastPlayedSong(req, res, token) {
     try {
-        console.log('🔹 Fetching last played song...');
-        const response = await axios.get('https://api.spotify.com/v1/me/player/recently-played?limit=1', {
+        const recentlyPlayedResponse = await axios.get('https://api.spotify.com/v1/me/player/recently-played?limit=1', {
             headers: { Authorization: `Bearer ${token}` },
-            timeout: 10000, // 10 seconds timeout for API request
         });
 
-        if (!response.data.items.length) {
-            return res.status(404).json({ error: 'No recently played tracks found' });
-        }
+        const track = recentlyPlayedResponse.data.items[0].track;
+        const played_at = recentlyPlayedResponse.data.items[0].played_at;
 
-        const track = response.data.items[0].track;
-        const played_at = response.data.items[0].played_at;
-
-        return res.json({
+        const lastPlayedSong = {
             song: track.name,
             artist: track.artists.map((a) => a.name).join(', '),
             coverArt: track.album.images[0].url,
@@ -112,58 +99,62 @@ async function fetchLastPlayedSong(req, res, token) {
                 minute: 'numeric',
                 timeZoneName: 'short',
             }),
-        });
-    } catch (error) {
-        console.error('❌ Error fetching last played song:', error.response ? error.response.data : error.message);
+        };
 
+        return res.json(lastPlayedSong);
+    } catch (error) {
+        console.error('Error fetching last played song:', error.response ? error.response.data : error.message);
+
+        // If the access token has expired, refresh it using the refresh token
         if (error.response && error.response.status === 401) {
-            console.log('🔄 Access token expired, attempting refresh...');
-            const newAccessToken = await refreshAccessToken();
-            return newAccessToken ? fetchLastPlayedSong(req, res, newAccessToken) : res.status(401).json({ error: 'Unable to refresh access token' });
+            const newAccessToken = await refreshAccessToken(refresh_token);
+            if (!newAccessToken) {
+                return res.status(401).json({ error: 'Unable to refresh access token' });
+            }
+            // After refreshing the token, fetch the last played song again
+            return fetchLastPlayedSong(req, res, newAccessToken);
         }
 
-        return res.status(500).json({ error: 'Failed to fetch data from Spotify' });
+        return res.status(500).json({ error: 'Failed to fetch data from Spotify', details: error.response ? error.response.data : error.message });
     }
 }
 
-async function refreshAccessToken() {
-    try {
-        console.log('🔄 Refreshing access token...');
-        const refresh_token = await redis.get('refresh_token');
-        if (!refresh_token) {
-            console.error('❌ No refresh token available');
-            return null;
-        }
+// Refresh the access token using the refresh token
+async function refreshAccessToken(refresh_token) {
+    if (!refresh_token) {
+        console.error('No refresh token available');
+        return null;
+    }
 
-        const response = await axios.post('https://accounts.spotify.com/api/token', null, {
+    try {
+        const tokenResponse = await axios.post('https://accounts.spotify.com/api/token', null, {
             headers: {
                 Authorization: `Basic ${Buffer.from(client_id + ':' + client_secret).toString('base64')}`,
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
-            params: { grant_type: 'refresh_token', refresh_token },
-            timeout: 10000,
+            params: {
+                grant_type: 'refresh_token',
+                refresh_token,
+            },
         });
 
-        const newAccessToken = response.data.access_token;
-        console.log('✅ Storing new access token in Redis...');
-        await redis.set('access_token', newAccessToken, 'EX', 3600);
-
+        const newAccessToken = tokenResponse.data.access_token;
         return newAccessToken;
     } catch (error) {
-        console.error('❌ Token Refresh Error:', error.response ? error.response.data : error.message);
+        console.error('Error refreshing token:', error.response ? error.response.data : error.message);
         return null;
     }
 }
 
+// Helper function to generate random strings for state
 function generateRandomString(length) {
+    let result = '';
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    return Array.from({ length }, () => characters.charAt(Math.floor(Math.random() * characters.length))).join('');
+    for (let i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    return result;
 }
-
-
-
-
-
 
 
 
