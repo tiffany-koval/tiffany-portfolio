@@ -3,10 +3,7 @@
   "builds": [
     {
       "src": "api/spotify.js",
-      "use": "@vercel/node",
-      "includeFiles": [
-        "node_modules/axios/**/*"
-      ]
+      "use": "@vercel/node"
     },
     {
       "src": "public/**/*",
@@ -56,6 +53,5 @@
     }
   ]
 }
-
 
 
