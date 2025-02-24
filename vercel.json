@@ -20,10 +20,6 @@
       "dest": "/api/spotify.js"
     },
     {
-      "src": "/api/update-song",
-      "dest": "/api/spotify.js"
-    },
-    {
       "src": "/api/callback",
       "dest": "/api/spotify.js"
     },
@@ -54,12 +50,6 @@
     {
       "src": "/(.*)",
       "dest": "/public/index.html"
-    }
-  ],
-  "crons": [
-    {
-      "path": "/api/last-song",
-      "schedule": "*/5 * * * *" 
     }
   ]
 }
