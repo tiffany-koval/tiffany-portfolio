@@ -58,7 +58,7 @@
   ],
   "crons": [
     {
-      "path": "/api/update-song",
+      "path": "/api/last-song",
       "schedule": "*/5 * * * *" 
     }
   ]
