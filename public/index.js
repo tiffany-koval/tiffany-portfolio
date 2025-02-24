@@ -3005,29 +3005,35 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-
+// Adding event listener for DOMContentLoaded to trigger logo appearance when container is intersected
 document.addEventListener("DOMContentLoaded", () => {
-  addLogos();
+  setupIntersectionObserver();
 });
 
-  const logos = [
-    {
-      id: "spotify-logo",
-      svg: `<svg width="80" height="80" viewBox="0 0 1000 1000.0022" xmlns="http://www.w3.org/2000/svg"><path d="M 519.83691,0.40204111 C 243.89495,-10.566117 11.324418,204.22689 0.40196015,480.16716 -10.56619,756.10802 204.27254,988.63153 480.16822,999.60014 756.10908,1010.5687 988.63259,795.77668 999.6012,519.83586 1010.5241,243.89502 795.72919,11.324491 519.83691,0.40204111 Z M 730.88041,732.84507 c -6.21431,10.96861 -18.32578,16.45433 -30.11722,14.80861 -3.60862,-0.50276 -7.22003,-1.69138 -10.60006,-3.61144 -66.08302,-37.61156 -138.10896,-62.10592 -214.06349,-72.80023 -75.95453,-10.6943 -151.95474,-6.9914 -225.8521,10.96862 -16.0412,3.88289 -32.17353,-5.94289 -36.05783,-21.98292 -3.88458,-16.04005 5.94088,-32.17438 21.98178,-36.05725 81.25624,-19.74291 164.79648,-23.81153 248.24535,-12.06578 83.4488,11.74575 162.60332,38.66301 235.3121,80.02311 14.30574,8.18006 19.3315,26.36867 11.19716,40.71728 z" fill="#1ED760"/></svg>`
-    },
-    {
-      id: "casper-logo",
-      svg: `<svg width="80" height="80" viewBox="0 0 250 250" xmlns="http://www.w3.org/2000/svg"><circle cx="125" cy="125" r="125" fill="#1E306E"/><path d="M120.112 50C77.0041 50 44 83.6777 44 125.438C44 167.198 77.0041 200.876 120.112 200.876C147.727 200.876 173.322 186.058 184.773 165.178L162.545 153.054C153.789 168.545 138.971 177.302 120.112 177.302C106.64 177.302 93.1694 171.913 84.4132 162.483C74.9835 152.38 69.595 139.583 69.595 126.112C69.595 112.64 74.9835 99.843 84.4132 89.7397C93.1694 80.3099 105.967 74.9215 120.112 74.9215C134.93 74.9215 143.686 79.6364 149.748 84.3512C156.483 89.0661 163.219 93.781 174.669 93.781C195.55 93.781 204.979 76.9422 207 68.186L183.426 63.4711C183.426 64.1446 181.405 70.8802 174.669 70.8802C171.302 70.8802 169.281 69.5331 164.566 66.1653C155.81 58.0826 144.36 50 120.112 50Z" fill="white"/></svg>`
-    }
-  ];
+// Logos data
+const logos = [
+  {
+    id: "spotify-logo",
+    svg: `<svg width="80" height="80" viewBox="0 0 1000 1000.0022" xmlns="http://www.w3.org/2000/svg"><path d="M 519.83691,0.40204111 C 243.89495,-10.566117 11.324418,204.22689 0.40196015,480.16716 -10.56619,756.10802 204.27254,988.63153 480.16822,999.60014 756.10908,1010.5687 988.63259,795.77668 999.6012,519.83586 1010.5241,243.89502 795.72919,11.324491 519.83691,0.40204111 Z M 730.88041,732.84507 c -6.21431,10.96861 -18.32578,16.45433 -30.11722,14.80861 -3.60862,-0.50276 -7.22003,-1.69138 -10.60006,-3.61144 -66.08302,-37.61156 -138.10896,-62.10592 -214.06349,-72.80023 -75.95453,-10.6943 -151.95474,-6.9914 -225.8521,10.96862 -16.0412,3.88289 -32.17353,-5.94289 -36.05783,-21.98292 -3.88458,-16.04005 5.94088,-32.17438 21.98178,-36.05725 81.25624,-19.74291 164.79648,-23.81153 248.24535,-12.06578 83.4488,11.74575 162.60332,38.66301 235.3121,80.02311 14.30574,8.18006 19.3315,26.36867 11.19716,40.71728 z" fill="#1ED760"/></svg>`
+  },
+  {
+    id: "casper-logo",
+    svg: `<svg width="80" height="80" viewBox="0 0 250 250" xmlns="http://www.w3.org/2000/svg"><circle cx="125" cy="125" r="125" fill="#1E306E"/><path d="M120.112 50C77.0041 50 44 83.6777 44 125.438C44 167.198 77.0041 200.876 120.112 200.876C147.727 200.876 173.322 186.058 184.773 165.178L162.545 153.054C153.789 168.545 138.971 177.302 120.112 177.302C106.64 177.302 93.1694 171.913 84.4132 162.483C74.9835 152.38 69.595 139.583 69.595 126.112C69.595 112.64 74.9835 99.843 84.4132 89.7397C93.1694 80.3099 105.967 74.9215 120.112 74.9215C134.93 74.9215 143.686 79.6364 149.748 84.3512C156.483 89.0661 163.219 93.781 174.669 93.781C195.55 93.781 204.979 76.9422 207 68.186L183.426 63.4711C183.426 64.1446 181.405 70.8802 174.669 70.8802C171.302 70.8802 169.281 69.5331 164.566 66.1653C155.81 58.0826 144.36 50 120.112 50Z" fill="white"/></svg>`
+  }, 
+  {
+    id: "portfolio-logo", 
+    svg: `<svg width="80" height="80" viewBox="0 0 250 250" xmlns="http://www.w3.org/2000/svg"> <path fill-rule="evenodd" clip-rule="evenodd" d="M27.5 55C42.6878 55 55 42.6878 55 27.5C55 12.3122 42.6878 0 27.5 0C12.3122 0 0 12.3122 0 27.5C0 42.6878 12.3122 55 27.5 55ZM27.4901 31.3372L32.2773 38.4476L35.5158 36.1948L30.7285 29.4364L37.9797 27.1836L36.783 23.382L29.3909 25.9868V17.8204H25.5189V25.9868L18.2677 23.4524L17.0709 27.1836L24.1813 29.4364L19.4645 36.1244L22.7029 38.3772L27.4901 31.3372Z" fill="#0F0F0F"/></svg>`
+  }
+];
 
+// Create logos and pop them into view
 function addLogos() {
   const container = document.querySelector(".companylogos-container");
   if (!container) {
     console.error("Container not found!");
     return;
   }
-  container.innerHTML = "";
+  container.innerHTML = ""; // Clear any existing logos
   
   const rows = 5;
   const cols = 5;
@@ -3038,7 +3044,7 @@ function addLogos() {
   
   for (let row = 0; row < rows; row++) {
     for (let col = 0; col < cols; col++) {
-      const logo = logos[logoIndex % logos.length]; // Cycle through logos
+      const logo = logos[logoIndex % logos.length];
       logoIndex++;
   
       const wrapper = document.createElement("div");
@@ -3047,7 +3053,7 @@ function addLogos() {
   
       // Initial position (above container)
       const initialX = col * cellWidth + (Math.random() * 0.9 - 0.15) * cellWidth;
-      const initialY = -Math.random() * 100; // Start above the container
+      const initialY = -Math.random() * 100;
   
       // Target position
       const finalX = Math.min(
@@ -3061,15 +3067,15 @@ function addLogos() {
   
       wrapper.style.position = "absolute";
       wrapper.style.left = `${finalX}px`;
-      wrapper.style.top = `${initialY}px`; // Start above container
+      wrapper.style.top = `${initialY}px`; 
       wrapper.style.opacity = "0";
-      wrapper.style.transition = "top 0.8s ease-out, opacity 0.5s"; // Falling effect
+      wrapper.style.transition = "top 0.8s ease-out, opacity 0.5s"; 
   
       // Click effect: Pop and disappear
       wrapper.addEventListener("click", function () {
         wrapper.style.transform = "scale(1.25)";
-        playRandomAudio();
-        setTimeout(() => wrapper.remove(), 100);
+        playRandomAudio(); // Play random audio on click
+        setTimeout(() => wrapper.remove(), 300); // Remove the logo after animation
       });
   
       container.appendChild(wrapper);
@@ -3082,6 +3088,35 @@ function addLogos() {
     }
   }
 }
+
+// Intersection Observer to detect when .image--2 img enters viewport
+function setupIntersectionObserver() {
+  const imageContainer = document.querySelector(".image--2 img");
+  if (!imageContainer) {
+    console.error("Image container not found!");
+    return;
+  }
+
+  const observer = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        addLogos(); // Call addLogos when container is in view
+        observer.disconnect(); // Stop observing after triggering
+      }
+    });
+  }, { threshold: 0.5 }); // Trigger when 50% of the image is visible
+
+  observer.observe(imageContainer); // Start observing the target element
+}
+
+// Play random audio on click
+function playRandomAudio() {
+  const sounds = ["./audio/pop-1.mp3", "./audio/pop-2.mp3", "./audio/pop-3.mp3"];
+  const randomSound = sounds[Math.floor(Math.random() * sounds.length)];
+  const audio = new Audio(randomSound);
+  audio.play();
+}
+
 
 
 
