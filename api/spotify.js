@@ -5,36 +5,42 @@ const Redis = require('ioredis');
 const client_id = process.env.SPOTIFY_CLIENT_ID;
 const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
 const redirect_uri = process.env.SPOTIFY_REDIRECT_URI;
+const redis_url = process.env.REDIS_URL;
+const redis_password = process.env.REDIS_PASSWORD; // In case authentication is needed
 
-// Set up Redis connection with timeout and retry logic
-const redis = new Redis(process.env.REDIS_URL, {
-    connectTimeout: 5000, // 5 seconds timeout for Redis connection
-    maxRetriesPerRequest: 3, // Retry up to 3 times
-    retryStrategy: (times) => Math.min(times * 1000, 3000), // Retry strategy: exponential backoff
+// Enhanced Redis Connection with Debugging
+const redis = new Redis(redis_url, {
+    password: redis_password || undefined,
+    connectTimeout: 10000, // 10 seconds timeout for Redis connection
+    maxRetriesPerRequest: 5, // Retry up to 5 times before failing
+    retryStrategy: (times) => Math.min(times * 1000, 5000), // Exponential backoff up to 5 seconds
 });
 
+// Debug Redis Connection
+redis.on('connect', () => console.log('✅ Redis connected successfully'));
+redis.on('error', (err) => console.error('❌ Redis connection error:', err.message));
+
 module.exports = async (req, res) => {
-    // Check Redis for stored access_token and refresh_token
+    console.log('🔹 Incoming request:', req.method, req.url);
+    
     let access_token, refresh_token;
     try {
+        console.log('🟡 Checking Redis for tokens...');
         access_token = await redis.get('access_token');
         refresh_token = await redis.get('refresh_token');
+        console.log('🔹 Access Token:', access_token ? 'Exists ✅' : 'Not Found ❌');
+        console.log('🔹 Refresh Token:', refresh_token ? 'Exists ✅' : 'Not Found ❌');
     } catch (error) {
-        console.error('Error accessing Redis:', error.message);
+        console.error('❌ Redis Fetch Error:', error.message);
         return res.status(500).json({ error: 'Redis connection error' });
     }
-    console.log('Access token from Redis:', access_token); // Debugging token
-    console.log('Refresh token from Redis:', refresh_token); // Debugging refresh token
 
-    // If access token exists, fetch the last played song directly
     if (access_token) {
-        console.log('Access token found, fetching last played song...');
         return fetchLastPlayedSong(req, res, access_token);
     }
 
-    // If no access token, handle the login flow
     if (req.query.action === 'login') {
-        console.log('No access token found, redirecting to Spotify login...');
+        console.log('🔹 Redirecting to Spotify login...');
         const scope = 'user-read-recently-played';
         const authURL = `https://accounts.spotify.com/authorize?${querystring.stringify({
             response_type: 'code',
@@ -46,7 +52,6 @@ module.exports = async (req, res) => {
         return res.redirect(authURL);
     }
 
-    // Callback from Spotify after login
     if (req.url.startsWith('/api/callback')) {
         const { code, state } = req.query;
         if (!code || !state) {
@@ -54,50 +59,48 @@ module.exports = async (req, res) => {
         }
 
         try {
-            console.log('Exchanging code for token...');
+            console.log('🔹 Exchanging code for token...');
             const tokenResponse = await axios.post('https://accounts.spotify.com/api/token', null, {
                 headers: {
                     Authorization: `Basic ${Buffer.from(client_id + ':' + client_secret).toString('base64')}`,
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                params: {
-                    code,
-                    redirect_uri,
-                    grant_type: 'authorization_code',
-                },
-                timeout: 5000, // 5 seconds timeout for token exchange
+                params: { code, redirect_uri, grant_type: 'authorization_code' },
+                timeout: 10000, // 10 seconds timeout for token exchange
             });
 
             const { access_token: newAccessToken, refresh_token: newRefreshToken } = tokenResponse.data;
 
-            // Store tokens in Redis with expiration time
-            console.log('Storing tokens in Redis...');
+            console.log('✅ Storing tokens in Redis...');
             await redis.set('access_token', newAccessToken, 'EX', 3600); // Expires in 1 hour
             await redis.set('refresh_token', newRefreshToken, 'EX', 7 * 24 * 3600); // Expires in 7 days
 
             return fetchLastPlayedSong(req, res, newAccessToken);
         } catch (error) {
-            console.error('Error fetching token from Spotify:', error.response ? error.response.data : error.message);
-            return res.status(500).json({ error: 'Failed to fetch data from Spotify', details: error.response ? error.response.data : error.message });
+            console.error('❌ Spotify Token Fetch Error:', error.response ? error.response.data : error.message);
+            return res.status(500).json({ error: 'Failed to fetch data from Spotify' });
         }
     }
 
     return res.status(400).json({ error: 'Invalid request' });
 };
 
-// Fetch the last played song
 async function fetchLastPlayedSong(req, res, token) {
     try {
-        console.log('Fetching last played song...');
-        const recentlyPlayedResponse = await axios.get('https://api.spotify.com/v1/me/player/recently-played?limit=1', {
+        console.log('🔹 Fetching last played song...');
+        const response = await axios.get('https://api.spotify.com/v1/me/player/recently-played?limit=1', {
             headers: { Authorization: `Bearer ${token}` },
-            timeout: 5000, // 5 seconds timeout for API request
+            timeout: 10000, // 10 seconds timeout for API request
         });
 
-        const track = recentlyPlayedResponse.data.items[0].track;
-        const played_at = recentlyPlayedResponse.data.items[0].played_at;
+        if (!response.data.items.length) {
+            return res.status(404).json({ error: 'No recently played tracks found' });
+        }
 
-        const lastPlayedSong = {
+        const track = response.data.items[0].track;
+        const played_at = response.data.items[0].played_at;
+
+        return res.json({
             song: track.name,
             artist: track.artists.map((a) => a.name).join(', '),
             coverArt: track.album.images[0].url,
@@ -109,70 +112,55 @@ async function fetchLastPlayedSong(req, res, token) {
                 minute: 'numeric',
                 timeZoneName: 'short',
             }),
-        };
-
-        return res.json(lastPlayedSong);
+        });
     } catch (error) {
-        console.error('Error fetching last played song:', error.response ? error.response.data : error.message);
+        console.error('❌ Error fetching last played song:', error.response ? error.response.data : error.message);
 
-        // If the access token has expired, refresh it using the refresh token
         if (error.response && error.response.status === 401) {
-            console.log('Access token expired, refreshing...');
-            const newAccessToken = await refreshAccessToken(refresh_token);
-            if (!newAccessToken) {
-                return res.status(401).json({ error: 'Unable to refresh access token' });
-            }
-            // After refreshing the token, fetch the last played song again
-            return fetchLastPlayedSong(req, res, newAccessToken);
+            console.log('🔄 Access token expired, attempting refresh...');
+            const newAccessToken = await refreshAccessToken();
+            return newAccessToken ? fetchLastPlayedSong(req, res, newAccessToken) : res.status(401).json({ error: 'Unable to refresh access token' });
         }
 
-        return res.status(500).json({ error: 'Failed to fetch data from Spotify', details: error.response ? error.response.data : error.message });
+        return res.status(500).json({ error: 'Failed to fetch data from Spotify' });
     }
 }
 
-// Refresh the access token using the refresh token
-async function refreshAccessToken(refresh_token) {
-    if (!refresh_token) {
-        console.error('No refresh token available');
-        return null;
-    }
-
+async function refreshAccessToken() {
     try {
-        console.log('Refreshing access token...');
-        const tokenResponse = await axios.post('https://accounts.spotify.com/api/token', null, {
+        console.log('🔄 Refreshing access token...');
+        const refresh_token = await redis.get('refresh_token');
+        if (!refresh_token) {
+            console.error('❌ No refresh token available');
+            return null;
+        }
+
+        const response = await axios.post('https://accounts.spotify.com/api/token', null, {
             headers: {
                 Authorization: `Basic ${Buffer.from(client_id + ':' + client_secret).toString('base64')}`,
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
-            params: {
-                grant_type: 'refresh_token',
-                refresh_token,
-            },
-            timeout: 5000, // 5 seconds timeout for token refresh
+            params: { grant_type: 'refresh_token', refresh_token },
+            timeout: 10000,
         });
 
-        const newAccessToken = tokenResponse.data.access_token;
-
-        // Store the new access token in Redis and reset its expiration
-        console.log('Storing refreshed token in Redis...');
-        await redis.set('access_token', newAccessToken, 'EX', 3600); // Expires in 1 hour
+        const newAccessToken = response.data.access_token;
+        console.log('✅ Storing new access token in Redis...');
+        await redis.set('access_token', newAccessToken, 'EX', 3600);
 
         return newAccessToken;
     } catch (error) {
-        console.error('Error refreshing token:', error.response ? error.response.data : error.message);
+        console.error('❌ Token Refresh Error:', error.response ? error.response.data : error.message);
         return null;
     }
 }
 
-// Helper function to generate random strings for state
 function generateRandomString(length) {
-    let result = '';
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    for (let i = 0; i < length; i++) {
-        result += characters.charAt(Math.floor(Math.random() * characters.length));
-    }
-    return result;
+    return Array.from({ length }, () => characters.charAt(Math.floor(Math.random() * characters.length))).join('');
 }
+
+
 
 
 
