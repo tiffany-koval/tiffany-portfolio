@@ -58,8 +58,8 @@ module.exports = async (req, res) => {
 
             return fetchLastPlayedSong(req, res, newAccessToken);
         } catch (error) {
-            console.error('Error fetching data from Spotify:', error.response ? error.response.data : error);
-            return res.status(500).json({ error: 'Failed to fetch data from Spotify' });
+            console.error('Error fetching token from Spotify:', error.response ? error.response.data : error.message);
+            return res.status(500).json({ error: 'Failed to fetch data from Spotify', details: error.response ? error.response.data : error.message });
         }
     }
 
@@ -92,7 +92,7 @@ async function fetchLastPlayedSong(req, res, token) {
 
         return res.json(lastPlayedSong);
     } catch (error) {
-        console.error('Error fetching last played song:', error.response ? error.response.data : error);
+        console.error('Error fetching last played song:', error.response ? error.response.data : error.message);
 
         // If the access token has expired, refresh it using the refresh token
         if (error.response && error.response.status === 401) {
@@ -104,7 +104,7 @@ async function fetchLastPlayedSong(req, res, token) {
             return fetchLastPlayedSong(req, res, newAccessToken);
         }
 
-        return res.status(500).json({ error: 'Failed to fetch data from Spotify' });
+        return res.status(500).json({ error: 'Failed to fetch data from Spotify', details: error.response ? error.response.data : error.message });
     }
 }
 
@@ -130,7 +130,7 @@ async function refreshAccessToken(refresh_token) {
         const newAccessToken = tokenResponse.data.access_token;
         return newAccessToken;
     } catch (error) {
-        console.error('Error refreshing token:', error.response ? error.response.data : error);
+        console.error('Error refreshing token:', error.response ? error.response.data : error.message);
         return null;
     }
 }
@@ -144,5 +144,6 @@ function generateRandomString(length) {
     }
     return result;
 }
+
 
 
