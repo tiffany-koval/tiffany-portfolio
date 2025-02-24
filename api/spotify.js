@@ -1,7 +1,8 @@
-import { createClient } from 'redis';
+const { createClient } = require('redis');
 const axios = require('axios');
 const querystring = require('querystring');
-const Cookies = require('cookies'); // For storing cookies on Vercel
+const Cookies = require('cookies');
+
 
 const client_id = process.env.SPOTIFY_CLIENT_ID;
 const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
