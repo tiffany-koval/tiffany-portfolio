@@ -1,12 +1,10 @@
 {
   "name": "practice",
   "version": "1.0.0",
-  "main": "server.js",
+  "main": "index.html",
   "scripts": {
-    "dev": "nodemon server.js",
-    "start": "NODE_ENV=production node server.js",
-    "build": "webpack --mode production",
-    "vercel-build": "webpack --mode production"
+    "build": "vercel build",
+    "deploy": "vercel --prod"
   },
   "keywords": [],
   "author": "",
@@ -16,28 +14,13 @@
     "axios": "^1.7.9",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
-    "express-session": "^1.18.1",
-    "lodash": "^4.17.21",
     "node-schedule": "^2.1.1",
     "querystring": "^0.2.1",
     "request": "^2.88.2",
     "sqlite3": "^5.1.7"
   },
   "devDependencies": {
-    "autoprefixer": "^10.4.20",
-    "browser-sync": "^3.0.3",
-    "css-loader": "^7.1.2",
-    "express": "^4.21.2",
-    "file-loader": "^6.2.0",
-    "html-webpack-plugin": "^5.6.3",
-    "mini-css-extract-plugin": "^2.9.2",
-    "nodemon": "^3.1.7",
-    "postcss-loader": "^8.1.1",
-    "style-loader": "^4.0.0",
-    "webpack": "^5.97.1",
-    "webpack-cli": "^5.1.4",
-    "webpack-dev-middleware": "^7.4.2",
-    "webpack-dev-server": "^5.2.0",
-    "webpack-hot-middleware": "^2.26.1"
+    "nodemon": "^3.1.7"
   }
 }
+

@@ -1,8 +1,8 @@
-import _ from 'lodash';
+// import _ from 'lodash';
 
-if (module.hot) {
-    module.hot.accept();
-}
+// if (module.hot) {
+//     module.hot.accept();
+// }
 
 // document.addEventListener("DOMContentLoaded", () => {
 //   const sections = document.querySelectorAll(".locker__section");

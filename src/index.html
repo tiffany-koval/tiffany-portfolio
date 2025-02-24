@@ -989,33 +989,34 @@
 </div>
 
 
-        <script src="/bundle.js"></script>
+        <script src="index.js"></script>
         <script>
-
-          window.onload = function () {
-  fetch('http://localhost:3002/last-song')
-    .then((response) => response.json())
-    .then((data) => {
-      if (data.song) {
-        document.getElementById('songName').innerText = data.song;
-        document.getElementById('songArtist').innerText = data.artist;
-        document.getElementById('songPlayedAt').innerText = data.playedAt;
-
-        const img = document.getElementById('songCover');
-        const tempImg = new Image(); // Create an offscreen image
-        tempImg.onload = () => {
-          img.src = tempImg.src; // Assign the preloaded image once it's ready
-          img.style.display = 'block'; // Show the image
-        };
-        tempImg.src = data.coverArt; // Start loading the actual cover art
-      }
-    })
-    .catch((error) => {
-      console.error('Error fetching song:', error);
-    });
-};
-
-      </script>
+          window.onload = async function () {
+            try {
+              const response = await fetch('/api/last-song');
+              const data = await response.json();
+        
+              if (data.song) {
+                document.getElementById('songName').innerText = data.song;
+                document.getElementById('songArtist').innerText = data.artist;
+                document.getElementById('songPlayedAt').innerText = data.playedAt;
+        
+                const img = document.getElementById('songCover');
+                const tempImg = new Image();
+                tempImg.onload = () => {
+                  img.src = tempImg.src;
+                  img.style.display = 'block';
+                };
+                tempImg.src = data.coverArt;
+              } else {
+                console.warn('No song data available');
+              }
+            } catch (error) {
+              console.error('Error fetching last played song:', error);
+            }
+          };
+        </script>
+        
       <!-- <script>
         const images = document.querySelectorAll(".flash-image");
         let currentIndex = 0;
