@@ -6,13 +6,23 @@ const client_id = process.env.SPOTIFY_CLIENT_ID;
 const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
 const redirect_uri = process.env.SPOTIFY_REDIRECT_URI;
 
-// Set up Redis connection
-const redis = new Redis(process.env.REDIS_URL); // Get the Redis URL from Upstash
+// Set up Redis connection with timeout and retry logic
+const redis = new Redis(process.env.REDIS_URL, {
+    connectTimeout: 5000, // 5 seconds timeout for Redis connection
+    maxRetriesPerRequest: 3, // Retry up to 3 times
+    retryStrategy: (times) => Math.min(times * 1000, 3000), // Retry strategy: exponential backoff
+});
 
 module.exports = async (req, res) => {
     // Check Redis for stored access_token and refresh_token
-    let access_token = await redis.get('access_token');
-    let refresh_token = await redis.get('refresh_token');
+    let access_token, refresh_token;
+    try {
+        access_token = await redis.get('access_token');
+        refresh_token = await redis.get('refresh_token');
+    } catch (error) {
+        console.error('Error accessing Redis:', error.message);
+        return res.status(500).json({ error: 'Redis connection error' });
+    }
     console.log('Access token from Redis:', access_token); // Debugging token
     console.log('Refresh token from Redis:', refresh_token); // Debugging refresh token
 
@@ -60,7 +70,7 @@ module.exports = async (req, res) => {
 
             const { access_token: newAccessToken, refresh_token: newRefreshToken } = tokenResponse.data;
 
-            // Store tokens in Redis
+            // Store tokens in Redis with expiration time
             console.log('Storing tokens in Redis...');
             await redis.set('access_token', newAccessToken, 'EX', 3600); // Expires in 1 hour
             await redis.set('refresh_token', newRefreshToken, 'EX', 7 * 24 * 3600); // Expires in 7 days
@@ -163,6 +173,7 @@ function generateRandomString(length) {
     }
     return result;
 }
+
 
 
 
