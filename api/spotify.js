@@ -10,6 +10,7 @@ module.exports = async (req, res) => {
     const cookies = new Cookies(req, res);
     let access_token = cookies.get('access_token'); // Fetch from cookies
     let refresh_token = cookies.get('refresh_token'); // Fetch refresh token
+    console.log('Access token from cookies:', access_token); // Debugging token
 
     // If access token exists, fetch the last played song directly
     if (access_token) {
@@ -57,7 +58,7 @@ module.exports = async (req, res) => {
 
             return fetchLastPlayedSong(req, res, newAccessToken);
         } catch (error) {
-            console.error('Error fetching data from Spotify:', error);
+            console.error('Error fetching data from Spotify:', error.response ? error.response.data : error);
             return res.status(500).json({ error: 'Failed to fetch data from Spotify' });
         }
     }
@@ -91,7 +92,7 @@ async function fetchLastPlayedSong(req, res, token) {
 
         return res.json(lastPlayedSong);
     } catch (error) {
-        console.error('Error fetching last played song:', error);
+        console.error('Error fetching last played song:', error.response ? error.response.data : error);
 
         // If the access token has expired, refresh it using the refresh token
         if (error.response && error.response.status === 401) {
@@ -129,7 +130,7 @@ async function refreshAccessToken(refresh_token) {
         const newAccessToken = tokenResponse.data.access_token;
         return newAccessToken;
     } catch (error) {
-        console.error('Error refreshing token:', error);
+        console.error('Error refreshing token:', error.response ? error.response.data : error);
         return null;
     }
 }
@@ -143,4 +144,5 @@ function generateRandomString(length) {
     }
     return result;
 }
+
 
