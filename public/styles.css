@@ -23,13 +23,6 @@
   font-style: normal;
 }
 
-@font-face {
-  font-family: 'OGG-Regular';
-  src: url('./fonts/ogg.woff2');
-  font-weight: normal;
-  font-style: normal;
-}
-
 *,
 *::before,
 *::after {
