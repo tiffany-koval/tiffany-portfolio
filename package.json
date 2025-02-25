@@ -15,9 +15,11 @@
     "cookies": "^0.9.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
+    "ioredis": "^5.5.0",
     "node-schedule": "^2.1.1",
     "querystring": "^0.2.1",
     "redis": "^4.7.0",
+    "request": "^2.88.2",
     "sqlite3": "^5.1.7",
     "yallist": "^5.0.0"
   },
